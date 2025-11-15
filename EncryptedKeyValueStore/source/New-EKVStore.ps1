@@ -35,7 +35,7 @@ function New-EKVStore {
     $Rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
     $Rng.GetBytes($SaltBytes)
     $Rng.Dispose()
-    $SaltText = [System.Text.Encoding]::UTF8.GetString($SaltBytes)
+    $SaltText = [Convert]::ToBase64String($SaltBytes)
     $SaltedPassword = $PlainPassword + $SaltText
 
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
