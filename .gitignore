@@ -53,6 +53,16 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
+# Visual Studio temporary files
+.vs/
+*.user
+*.suo
+*.ncb
+*.sdf
+*.opensdf
+*.cache
+*.log
+
 # CUSTOM
 
 .ekvs/
