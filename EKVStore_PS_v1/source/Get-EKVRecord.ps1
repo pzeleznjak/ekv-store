@@ -8,7 +8,10 @@ function Get-EKVRecord {
         [securestring] $Password,
 
         [Parameter(Mandatory=$true, Position=2, HelpMessage="Key of the Encrypted Key-Value record to get")]
-        [string] $Key
+        [string] $Key,
+
+        [Parameter(HelpMessage="Return Encrypted Value as SecureString")]
+        [switch] $AsSecureString = $false
     )
 
     $DirectoryPath = Join-Path $PSScriptRoot ".ekvs" 
@@ -76,5 +79,10 @@ function Get-EKVRecord {
     $DecryptedValueText = [System.Text.Encoding]::UTF8.GetString($DecryptedBytes)
 
     Write-Host "Successfully decrypted Encrypted Key-Value under key $Key"
+
+    if ($AsSecureString) {
+        return $DecryptedValueText | ConvertTo-SecureString -AsPlainText -Force
+    }
+
     return $DecryptedValueText
 }
