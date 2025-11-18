@@ -12,7 +12,7 @@
 RootModule = 'EKVStore_PS.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '1.0.0.'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,7 +24,7 @@ GUID = 'b995322d-341c-4348-a1f9-86f0da936fda'
 Author = 'Petar Železnjak'
 
 # Company or vendor of this module
-CompanyName = 'Unknown'
+# CompanyName = 'Unknown'
 
 # Copyright statement for this module
 Copyright = '(c) Petar Železnjak. All rights reserved.'
