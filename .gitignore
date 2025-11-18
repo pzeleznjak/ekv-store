@@ -66,3 +66,4 @@ nunit-*.xml
 # CUSTOM
 
 .ekvs/
+Builds/

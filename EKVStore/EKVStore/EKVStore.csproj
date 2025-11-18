@@ -1,9 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<OutputPath>bin\Debug\net9.0\temp\</OutputPath>
+	</PropertyGroup>
+
+
+	<Target Name="CopyToPSFolder" AfterTargets="Build">
+		<PropertyGroup>
+			<DestFolder>$(SolutionDir)..\DLLs\</DestFolder>
+		</PropertyGroup>
+		<MakeDir Directories="$(DestFolder)" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DestFolder)" SkipUnchangedFiles="true" />
+	</Target>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.5.4" />
+	</ItemGroup>
 
 </Project>
