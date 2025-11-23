@@ -67,3 +67,4 @@ nunit-*.xml
 
 .ekvs/
 Builds/
+Releases/
