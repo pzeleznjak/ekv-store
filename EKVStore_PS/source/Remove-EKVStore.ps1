@@ -8,12 +8,7 @@ function Remove-EKVStore {
         [securestring] $Password
     )
 
-    $DirectoryPath = Join-Path $PSScriptRoot ".ekvs" 
-    $StorePath = Join-Path $DirectoryPath "$($Name).ekv"
-    if (-Not (Test-Path -Path $StorePath)) {
-        Write-Error "Encrypted Key-Value store $Name does not exist"
-        return $null
-    }
+    $StorePath = Get-StorePath -Name $Name -CheckExists
 
     $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
     $PasswordSaltHash = $FirstLineSplit[0]
@@ -36,7 +31,7 @@ function Remove-EKVStore {
         return $null
     }
 
-    Write-Host "Are you sure you want to continue? (y/n)" -ForegroundColor Red
+    Write-Host "Are you sure you want to remove Encrypted Key-Value store $Name ? (y/n)" -ForegroundColor Red
     $answer = Read-Host
 
     if ($answer -notmatch '^[Yy]') {

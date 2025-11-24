@@ -8,12 +8,8 @@ function Get-EKVKeys {
         [securestring] $Password
     )
 
-    $DirectoryPath = Join-Path $PSScriptRoot ".ekvs" 
-    $StorePath = Join-Path $DirectoryPath "$($Name).ekv"
-    if (-Not (Test-Path -Path $StorePath)) {
-        Write-Error "Encrypted Key-Value store $Name does not exist"
-        return $null
-    }
+    $StorePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $StorePath) { return }
 
     $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
     $PasswordSaltHash = $FirstLineSplit[0]

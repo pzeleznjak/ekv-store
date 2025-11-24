@@ -7,22 +7,19 @@ function New-EKVStore {
         [Parameter(Mandatory=$true, Position=1, HelpMessage="Master Password of the new Encrypted Key-Value store")]
         [securestring] $Password,
 
-        [Parameter(Position=3, HelpMessage="Force creation of the copied Encrypted Key-Value store")]
+        [Parameter(Position=2, HelpMessage="Force creation of the copied Encrypted Key-Value store")]
         [switch] $Force = $false
     )
 
-    $DirectoryPath = Join-Path $PSScriptRoot ".ekvs" 
-    if (-Not (Test-Path -Path $DirectoryPath)) {
+    $DirectoryPath = Get-StoreDirectoryPath
+    if (-not (Test-Path -Path $DirectoryPath)) {
         New-Item -Path $DirectoryPath -ItemType Directory -Force | Out-Null
     }
-
-    $StorePath = Join-Path $DirectoryPath "$($Name).ekv"
-    if (-not $Force -and (Test-Path -Path $StorePath)) {
-        Write-Error "Encrypted Key-Value store $Name already exists"
-        return $null
-    }
-    New-Item -Path $StorePath -ItemType File -Force | Out-Null
-    Write-Host "Created new empty Encrypted Key-Value store"
+    $StorePath = Get-StorePath -Name $Name -DirectoryPath $DirectoryPath
+    $success = $false
+    if ($Force) { $success = New-StoreFile -StorePath $StorePath -Force } 
+    else { $success = New-StoreFile -StorePath $StorePath }
+    if (-not $success) { return }
 
     $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
     try {
@@ -48,5 +45,5 @@ function New-EKVStore {
     $Record = $HashText + " " + $SaltText
     $Record | Out-File -FilePath $StorePath -Encoding utf8
 
-    return $StorePath
+    return
 }

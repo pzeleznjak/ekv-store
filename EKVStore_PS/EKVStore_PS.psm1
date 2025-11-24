@@ -1,3 +1,5 @@
+Import-Module "$PSScriptRoot\source\EKVStoreUtils.psm1" -Force
+
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Get-ChildItem $ScriptDir -Recurse -Filter *.ps1 -File | Unblock-File

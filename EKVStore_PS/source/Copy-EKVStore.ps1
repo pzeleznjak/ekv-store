@@ -14,12 +14,9 @@ function Copy-EKVStore {
         [switch] $Force = $false
     )
 
-    $DirectoryPath = Join-Path $PSScriptRoot ".ekvs" 
-    $StorePath = Join-Path $DirectoryPath "$($Name).ekv"
-    if (-Not (Test-Path -Path $StorePath)) {
-        Write-Error "Encrypted Key-Value store $Name does not exist"
-        return $null
-    }
+    $DirectoryPath = Get-StoreDirectoryPath
+    $StorePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $StorePath) { return }
 
     $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
     $PasswordSaltHash = $FirstLineSplit[0]
@@ -42,15 +39,13 @@ function Copy-EKVStore {
         return $null
     }
     
-    $CopyStorePath = Join-Path $DirectoryPath "$($CopyName).ekv"
-    if (-not $Force -and (Test-Path -Path $CopyStorePath)) {
-        Write-Error "Encrypted Key-Value store $CopyName already exists"
-        return $null
-    }
-    New-Item -Path $CopyStorePath -ItemType File -Force | Out-Null
-    Write-Host "Created new empty Encrypted Key-Value store"
+    $CopyStorePath = Get-StorePath -Name $CopyName -DirectoryPath $DirectoryPath
+    if ($null -eq $CopyStorePath) { return }
+    $success = $false
+    if ($Force) { $success = New-StoreFile -StorePath $CopyStorePath -Force } 
+    else { $success = New-StoreFile -StorePath $CopyStorePath }
+    if (-not $success) { return }
 
     (Get-Content $StorePath) | Set-Content $CopyStorePath
     Write-Host "Copied contents of $Name to $CopyName Encrypted Key-Value store"
-    return $CopyStorePath
 }

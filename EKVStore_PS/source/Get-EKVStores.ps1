@@ -1,5 +1,5 @@
 function Get-EKVStores {
-    $DirectoryPath = Join-Path $PSScriptRoot ".ekvs" 
+    $DirectoryPath = Get-StoreDirectoryPath
     $Stores = Get-ChildItem $DirectoryPath -File -Filter *.ekv
         | Select-Object -ExpandProperty BaseName
     return $Stores
