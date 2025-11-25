@@ -78,22 +78,38 @@ function ConvertTo-PlainString {
     }
 }
 
+function Get-SHA256HashHex {
+    param(
+        [Parameter(Mandatory=$true, Position=0, HelpMessage="Text for which to calculate SHA256 Hash Hex")]
+        [string] $Text
+    )
+
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
+    $SHA256 = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $HashBytes = $SHA256.ComputeHash($Bytes)
+    }
+    finally {
+        $SHA256.Dispose()
+    }
+    # return [System.Text.Encoding]::UTF8.GetString($HashBytes)
+    return [System.BitConverter]::ToString($HashBytes) -replace "-", ""
+}
+
 function Compare-PasswordHashes {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("PSAvoidUsingPlainTextForPassword", "", Justification = "Hashed value is safe to use as a string")]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Hashed master password")]
         [string] $MasterPasswordHash,
-        [Parameter(Mandatory=$true, Position=1, HelpMessage="")]
+        [Parameter(Mandatory=$true, Position=1, HelpMessage="Master password")]
         [securestring] $Password,
+        [Parameter(Mandatory=$true, Position=2, HelpMessage="Master password salt")]
         [string] $Salt
     )
 
     $PlainPassword = ConvertTo-PlainString -Secure $Password
     $SaltedPassword = $PlainPassword + $Salt
-    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
-    $SHA256 = [System.Security.Cryptography.SHA256]::Create()
-    $HashBytes = $SHA256.ComputeHash($Bytes)
-    $HashText = ([System.BitConverter]::ToString($HashBytes) -replace "-", "")
+    $HashText = Get-SHA256HashHex -Text $SaltedPassword
     if ($HashText -ne $MasterPasswordHash) {
         Write-Error "Invalid Key-Value store Master Password"
         return $false

@@ -30,11 +30,7 @@ function New-EKVStore {
     $SaltText = [Convert]::ToBase64String($SaltBytes)
     $SaltedPassword = $PlainPassword + $SaltText
 
-    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
-    $SHA256 = [System.Security.Cryptography.SHA256]::Create()
-    $HashBytes = $SHA256.ComputeHash($Bytes)
-    $HashText = ([System.BitConverter]::ToString($HashBytes) -replace "-", "")
-    # $HashText = [System.Text.Encoding]::UTF8.GetString($HashBytes)
+    $HashText = Get-SHA256HashHex -Text $SaltedPassword
 
     $Record = $HashText + " " + $SaltText
     $Record | Out-File -FilePath $StorePath -Encoding utf8
