@@ -77,3 +77,26 @@ function ConvertTo-PlainString {
         }
     }
 }
+
+function Compare-PasswordHashes {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("PSAvoidUsingPlainTextForPassword", "", Justification = "Hashed value is safe to use as a string")]
+    param(
+        [Parameter(Mandatory=$true, Position=0, HelpMessage="Hashed master password")]
+        [string] $MasterPasswordHash,
+        [Parameter(Mandatory=$true, Position=1, HelpMessage="")]
+        [securestring] $Password,
+        [string] $Salt
+    )
+
+    $PlainPassword = ConvertTo-PlainString -Secure $Password
+    $SaltedPassword = $PlainPassword + $Salt
+    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
+    $SHA256 = [System.Security.Cryptography.SHA256]::Create()
+    $HashBytes = $SHA256.ComputeHash($Bytes)
+    $HashText = ([System.BitConverter]::ToString($HashBytes) -replace "-", "")
+    if ($HashText -ne $MasterPasswordHash) {
+        Write-Error "Invalid Key-Value store Master Password"
+        return $false
+    }
+    return $true
+}

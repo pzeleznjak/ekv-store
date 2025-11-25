@@ -15,15 +15,8 @@ function Remove-EKVStore {
     
     $PlainPassword = ConvertTo-PlainString -Secure $Password
     
-    $SaltedPassword = $PlainPassword + $MasterPassword.Salt
-    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
-    $SHA256 = [System.Security.Cryptography.SHA256]::Create()
-    $HashBytes = $SHA256.ComputeHash($Bytes)
-    $HashText = ([System.BitConverter]::ToString($HashBytes) -replace "-", "")
-    if ($HashText -ne $MasterPassword.PasswordHash) {
-        Write-Error "Invalid Key-Value store Master Password"
-        return $null
-    }
+    $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
+    if (-not $success) { return $null }
 
     Write-Host "Are you sure you want to remove Encrypted Key-Value store $Name ? (y/n)" -ForegroundColor Red
     $answer = Read-Host
