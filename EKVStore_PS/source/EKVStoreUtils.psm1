@@ -29,7 +29,7 @@ function Get-StorePath{
 function New-StoreFile {
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Path to new Encrypted Key-Value store file")]
-        $StorePath,
+        [string] $StorePath,
 
         [Parameter(Position=1, HelpMessage="Force creation of the copied Encrypted Key-Value store")]
         [switch] $Force = $false
@@ -47,12 +47,33 @@ function New-StoreFile {
 function Get-MasterPassword {
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Path to Encrypted Key-Value store file")]
-        $StorePath
+        [string] $StorePath
     )
 
     $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
     return [PSCustomObject]@{
         PasswordHash = $FirstLineSplit[0]
         Salt = $FirstLineSplit[1]
+    }
+}
+
+function ConvertTo-PlainString {
+    param(
+        [Parameter(Mandatory=$true, Position=0, HelpMessage="Secure string to convert to plain string")]
+        [securestring] $Secure,
+
+        [Parameter(Position=1, HelpMessage="Dispose the secure string after converting")]
+        [switch] $Dispose = $false
+    )
+
+    $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Secure)
+    try {
+        return [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($Ptr)
+    }
+    finally {
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Ptr)
+        if ($Dispose) {
+            $Secure.Dispose()
+        }
     }
 }

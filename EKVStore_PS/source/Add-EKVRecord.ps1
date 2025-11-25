@@ -19,13 +19,8 @@ function Add-EKVRecord {
 
     $MasterPassword = Get-MasterPassword -StorePath $StorePath
     
-    $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
-    try {
-        $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($Ptr)
-    }
-    finally {
-        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Ptr)
-    }
+    $PlainPassword = ConvertTo-PlainString -Secure $Password
+
     $SaltedPassword = $PlainPassword + $MasterPassword.Salt
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
     $SHA256 = [System.Security.Cryptography.SHA256]::Create()

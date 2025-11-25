@@ -21,13 +21,7 @@ function New-EKVStore {
     else { $success = New-StoreFile -StorePath $StorePath }
     if (-not $success) { return }
 
-    $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
-    try {
-        $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($Ptr)
-    }
-    finally {
-        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Ptr)
-    }
+    $PlainPassword = ConvertTo-PlainString -Secure $Password
 
     $SaltBytes = New-Object byte[] 8
     $Rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
