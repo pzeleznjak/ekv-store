@@ -10,9 +10,7 @@ function Remove-EKVStore {
 
     $StorePath = Get-StorePath -Name $Name -CheckExists
 
-    $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
-    $PasswordSaltHash = $FirstLineSplit[0]
-    $PasswordSalt = $FirstLineSplit[1]
+    $MasterPassword = Get-MasterPassword -StorePath $StorePath
     
     $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)
     try {
@@ -21,12 +19,12 @@ function Remove-EKVStore {
     finally {
         [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Ptr)
     }
-    $SaltedPassword = $PlainPassword + $PasswordSalt
+    $SaltedPassword = $PlainPassword + $MasterPassword.Salt
     $Bytes = [System.Text.Encoding]::UTF8.GetBytes($SaltedPassword)
     $SHA256 = [System.Security.Cryptography.SHA256]::Create()
     $HashBytes = $SHA256.ComputeHash($Bytes)
     $HashText = ([System.BitConverter]::ToString($HashBytes) -replace "-", "")
-    if ($HashText -ne $PasswordSaltHash) {
+    if ($HashText -ne $MasterPassword.PasswordHash) {
         Write-Error "Invalid Key-Value store Master Password"
         return $null
     }
@@ -48,7 +46,7 @@ function Remove-EKVStore {
 
         $Kdf = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
             [System.Text.Encoding]::UTF8.GetBytes($PlainPassword), 
-            [System.Text.Encoding]::UTF8.GetBytes($PasswordSalt), 
+            [System.Text.Encoding]::UTF8.GetBytes($MasterPassword.Salt), 
             8192, 
             [System.Security.Cryptography.HashAlgorithmName]::SHA256)
         

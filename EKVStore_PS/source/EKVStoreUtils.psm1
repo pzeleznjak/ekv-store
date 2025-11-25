@@ -43,3 +43,16 @@ function New-StoreFile {
     Write-Host "Created new empty Encrypted Key-Value store"
     return $true
 }
+
+function Get-MasterPassword {
+    param(
+        [Parameter(Mandatory=$true, Position=0, HelpMessage="Path to Encrypted Key-Value store file")]
+        $StorePath
+    )
+
+    $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
+    return [PSCustomObject]@{
+        PasswordHash = $FirstLineSplit[0]
+        Salt = $FirstLineSplit[1]
+    }
+}
