@@ -1,6 +1,6 @@
 function Get-EKVStores {
-    $DirectoryPath = Get-StoreDirectoryPath
-    $Stores = Get-ChildItem $DirectoryPath -File -Filter *.ekv
+    $directoryPath = Get-StoreDirectoryPath
+    $stores = Get-ChildItem $directoryPath -File -Filter *.ekv
         | Select-Object -ExpandProperty BaseName
-    return $Stores
+    return $stores
 }

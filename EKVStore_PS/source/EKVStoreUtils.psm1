@@ -21,12 +21,12 @@ function Get-StorePath{
         $DirectoryPath = Get-StoreDirectoryPath
     }
 
-    $StorePath = Join-Path $DirectoryPath "$($Name).ekv"
-    if ($CheckExists -and -not (Test-Path -Path $StorePath)) {
+    $storePath = Join-Path $DirectoryPath "$($Name).ekv"
+    if ($CheckExists -and -not (Test-Path -Path $storePath)) {
         Write-Error "Encrypted Key-Value store $Name does not exist"
         return $null
     }
-    return $StorePath
+    return $storePath
 }
 
 function New-StoreFile {
@@ -40,7 +40,7 @@ function New-StoreFile {
     )
 
     if (-not $Force -and (Test-Path -Path $StorePath)) {
-        Write-Error "Encrypted Key-Value store $Name already exists"
+        Write-Error "Encrypted Key-Value store already exists"
         return $false
     }
     New-Item -Path $StorePath -ItemType File -Force | Out-Null
@@ -60,10 +60,10 @@ function Get-MasterPassword {
         [string] $StorePath
     )
 
-    $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
+    $firstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
     return [MasterPassword]@{
-        PasswordHash = $FirstLineSplit[0]
-        Salt = $FirstLineSplit[1]
+        PasswordHash = $firstLineSplit[0]
+        Salt = $firstLineSplit[1]
     }
 }
 
@@ -77,12 +77,12 @@ function ConvertTo-PlainString {
         [switch] $Dispose = $false
     )
 
-    $Ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Secure)
+    $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Secure)
     try {
-        return [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($Ptr)
+        return [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr)
     }
     finally {
-        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($Ptr)
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr)
         if ($Dispose) {
             $Secure.Dispose()
         }
@@ -96,16 +96,16 @@ function Get-SHA256HashHex {
         [string] $Text
     )
 
-    $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
-    $SHA256 = [System.Security.Cryptography.SHA256]::Create()
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($Text)
+    $sha256 = [System.Security.Cryptography.SHA256]::Create()
     try {
-        $HashBytes = $SHA256.ComputeHash($Bytes)
+        $hashBytes = $sha256.ComputeHash($bytes)
     }
     finally {
-        $SHA256.Dispose()
+        $sha256.Dispose()
     }
     # return [System.Text.Encoding]::UTF8.GetString($HashBytes)
-    return [System.BitConverter]::ToString($HashBytes) -replace "-", ""
+    return [System.BitConverter]::ToString($hashBytes) -replace "-", ""
 }
 
 function Compare-PasswordHashes {
@@ -120,10 +120,10 @@ function Compare-PasswordHashes {
         [string] $Salt
     )
 
-    $PlainPassword = ConvertTo-PlainString -Secure $Password
-    $SaltedPassword = $PlainPassword + $Salt
-    $HashText = Get-SHA256HashHex -Text $SaltedPassword
-    if ($HashText -ne $MasterPasswordHash) {
+    $plainPassword = ConvertTo-PlainString -Secure $Password
+    $saltedPassword = $plainPassword + $Salt
+    $hashText = Get-SHA256HashHex -Text $saltedPassword
+    if ($hashText -ne $MasterPasswordHash) {
         Write-Error "Invalid Key-Value store Master Password"
         return $false
     }
@@ -139,23 +139,23 @@ function New-AESObject {
         [string] $Salt
     )
 
-    $PlainPassword = ConvertTo-PlainString -Secure $Password
+    $plainPassword = ConvertTo-PlainString -Secure $Password
 
-    $Kdf = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
-        [System.Text.Encoding]::UTF8.GetBytes($PlainPassword), 
+    $kdf = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
+        [System.Text.Encoding]::UTF8.GetBytes($plainPassword), 
         [System.Text.Encoding]::UTF8.GetBytes($Salt), 
         8192, 
         [System.Security.Cryptography.HashAlgorithmName]::SHA256)
     
-    $EncryptionKey = $Kdf.GetBytes(32)
-    $EncryptionIv = $Kdf.GetBytes(16)
+    $encryptionKey = $kdf.GetBytes(32)
+    $encryptionIv = $kdf.GetBytes(16)
 
-    $Aes = [System.Security.Cryptography.Aes]::Create()
-    $Aes.KeySize = 256
-    $Aes.Mode = [System.Security.Cryptography.CipherMode]::CBC
-    $Aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
-    $Aes.Key = $EncryptionKey
-    $Aes.Iv = $EncryptionIV
+    $aes = [System.Security.Cryptography.Aes]::Create()
+    $aes.KeySize = 256
+    $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC
+    $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
+    $aes.Key = $encryptionKey
+    $aes.Iv = $encryptionIv
 
-    return $Aes
+    return $aes
 }

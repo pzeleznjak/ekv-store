@@ -14,22 +14,22 @@ function Copy-EKVStore {
         [switch] $Force = $false
     )
 
-    $DirectoryPath = Get-StoreDirectoryPath
-    $StorePath = Get-StorePath -Name $Name -CheckExists
-    if ($null -eq $StorePath) { return }
+    $directoryPath = Get-StoreDirectoryPath
+    $storePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $storePath) { return }
 
-    $MasterPassword = Get-MasterPassword -StorePath $StorePath
+    $masterPassword = Get-MasterPassword -StorePath $storePath
     
-    $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
+    $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $Password -Salt $masterPassword.Salt
     if (-not $success) { return $null }
     
-    $CopyStorePath = Get-StorePath -Name $CopyName -DirectoryPath $DirectoryPath
-    if ($null -eq $CopyStorePath) { return }
+    $copyStorePath = Get-StorePath -Name $CopyName -DirectoryPath $directoryPath
+    if ($null -eq $copyStorePath) { return }
     $success = $false
-    if ($Force) { $success = New-StoreFile -StorePath $CopyStorePath -Force } 
-    else { $success = New-StoreFile -StorePath $CopyStorePath }
+    if ($Force) { $success = New-StoreFile -StorePath $copyStorePath -Force } 
+    else { $success = New-StoreFile -StorePath $copyStorePath }
     if (-not $success) { return }
 
-    (Get-Content $StorePath) | Set-Content $CopyStorePath
+    (Get-Content $storePath) | Set-Content $copyStorePath
     Write-Host "Copied contents of $Name to $CopyName Encrypted Key-Value store"
 }

@@ -14,47 +14,47 @@ function Get-EKVRecord {
         [switch] $AsSecureString = $false
     )
 
-    $StorePath = Get-StorePath -Name $Name -CheckExists
-    if ($null -eq $StorePath) { return }
+    $storePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $storePath) { return }
 
-    $MasterPassword = Get-MasterPassword -StorePath $StorePath
+    $masterPassword = Get-MasterPassword -StorePath $storePath
        
-    $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
+    $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $Password -Salt $masterPassword.Salt
     if (-not $success) { return $null }
 
-    $EncryptedValueHex = $null
-    foreach ($Line in Get-Content -Path $StorePath -Encoding UTF8 | Select-Object -Skip 1) {
+    $encryptedValueHex = $null
+    foreach ($Line in Get-Content -Path $storePath -Encoding UTF8 | Select-Object -Skip 1) {
         $Split = $Line -split '\s+'
         if ($Split[0] -eq $Key) {
-            $EncryptedValueHex = $Split[1]
+            $encryptedValueHex = $Split[1]
             break;
         }
     }
 
-    if ($null -eq $EncryptedValueHex) {
+    if ($null -eq $encryptedValueHex) {
         Write-Error "Encrypted value for key $Key not found"
         return $null
     }
 
-    $EncryptedValueBytes = for ($i = 0; $i -lt $EncryptedValueHex.Length; $i += 2) { [Convert]::ToByte($EncryptedValueHex.Substring($i,2),16) }
+    $encryptedValueBytes = for ($i = 0; $i -lt $encryptedValueHex.Length; $i += 2) { [Convert]::ToByte($encryptedValueHex.Substring($i,2),16) }
 
     try {
-        $Aes = New-AESObject -Password $Password -Salt $MasterPassword.Salt
-        $Decryptor = $Aes.CreateDecryptor()
-        $DecryptedBytes = $Decryptor.TransformFinalBlock($EncryptedValueBytes, 0, $EncryptedValueBytes.Length)
-        $DecryptedValueText = [System.Text.Encoding]::UTF8.GetString($DecryptedBytes)    
+        $aes = New-AESObject -Password $Password -Salt $masterPassword.Salt
+        $decryptor = $aes.CreateDecryptor()
+        $decryptedBytes = $decryptor.TransformFinalBlock($encryptedValueBytes, 0, $encryptedValueBytes.Length)
+        $decryptedValueText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)    
     }
     finally {
-        $Aes.Dispose()
-        $Decryptor.Dispose()
+        $aes.Dispose()
+        $decryptor.Dispose()
     }
     
 
     Write-Host "Successfully decrypted Encrypted Key-Value under key $Key"
 
     if ($AsSecureString) {
-        return $DecryptedValueText | ConvertTo-SecureString -AsPlainText -Force
+        return $decryptedValueText | ConvertTo-SecureString -AsPlainText -Force
     }
 
-    return $DecryptedValueText
+    return $decryptedValueText
 }

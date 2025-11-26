@@ -14,29 +14,29 @@ function Add-EKVRecord {
         [string] $Value
     )
 
-    $StorePath = Get-StorePath -Name $Name -CheckExists
-    if ($null -eq $StorePath) { return $null }
+    $storePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $storePath) { return $null }
 
-    $MasterPassword = Get-MasterPassword -StorePath $StorePath
+    $masterPassword = Get-MasterPassword -StorePath $storePath
 
-    $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
+    $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $Password -Salt $masterPassword.Salt
     if (-not $success) { return $null }
 
-    $ValueBytes = [System.Text.Encoding]::UTF8.GetBytes($Value)
+    $valueBytes = [System.Text.Encoding]::UTF8.GetBytes($Value)
     
     try {
-        $Aes = New-AESObject -Password $Password -Salt $MasterPassword.Salt    
-        $Encryptor = $Aes.CreateEncryptor()
-        $EncryptedValueBytes = $Encryptor.TransformFinalBlock($ValueBytes, 0, $ValueBytes.Length)
-        $EncryptedValueHex = [System.BitConverter]::ToString($EncryptedValueBytes) -replace "-", ""
+        $aes = New-AESObject -Password $Password -Salt $masterPassword.Salt    
+        $encryptor = $aes.CreateEncryptor()
+        $encryptedValueBytes = $encryptor.TransformFinalBlock($valueBytes, 0, $valueBytes.Length)
+        $encryptedValueHex = [System.BitConverter]::ToString($encryptedValueBytes) -replace "-", ""
     }
     finally {
-        $Aes.Dispose()
-        $Encryptor.Dispose()
+        $aes.Dispose()
+        $encryptor.Dispose()
     }
 
-    $Record = $Key + " " + $EncryptedValueHex
-    $Record | Out-File -FilePath $StorePath -Encoding utf8 -Append
+    $record = $Key + " " + $encryptedValueHex
+    $record | Out-File -FilePath $storePath -Encoding utf8 -Append
 
     Write-Host "Successfully added Encrypted Key-Value under key $Key"
 

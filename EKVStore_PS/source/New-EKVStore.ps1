@@ -11,29 +11,29 @@ function New-EKVStore {
         [switch] $Force = $false
     )
 
-    $DirectoryPath = Get-StoreDirectoryPath
-    if (-not (Test-Path -Path $DirectoryPath)) {
-        New-Item -Path $DirectoryPath -ItemType Directory -Force | Out-Null
+    $directoryPath = Get-StoreDirectoryPath
+    if (-not (Test-Path -Path $directoryPath)) {
+        New-Item -Path $directoryPath -ItemType Directory -Force | Out-Null
     }
-    $StorePath = Get-StorePath -Name $Name -DirectoryPath $DirectoryPath
+    $storePath = Get-StorePath -Name $Name -DirectoryPath $directoryPath
     $success = $false
-    if ($Force) { $success = New-StoreFile -StorePath $StorePath -Force } 
-    else { $success = New-StoreFile -StorePath $StorePath }
+    if ($Force) { $success = New-StoreFile -StorePath $storePath -Force } 
+    else { $success = New-StoreFile -StorePath $storePath }
     if (-not $success) { return }
 
-    $PlainPassword = ConvertTo-PlainString -Secure $Password
+    $plainPassword = ConvertTo-PlainString -Secure $Password
 
-    $SaltBytes = New-Object byte[] 8
-    $Rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
-    $Rng.GetBytes($SaltBytes)
-    $Rng.Dispose()
-    $SaltText = [Convert]::ToBase64String($SaltBytes)
-    $SaltedPassword = $PlainPassword + $SaltText
+    $saltBytes = New-Object byte[] 8
+    $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+    $rng.GetBytes($saltBytes)
+    $rng.Dispose()
+    $saltText = [Convert]::ToBase64String($saltBytes)
+    $saltedPassword = $plainPassword + $saltText
 
-    $HashText = Get-SHA256HashHex -Text $SaltedPassword
+    $hashText = Get-SHA256HashHex -Text $saltedPassword
 
-    $Record = $HashText + " " + $SaltText
-    $Record | Out-File -FilePath $StorePath -Encoding utf8
+    $record = $hashText + " " + $saltText
+    $record | Out-File -FilePath $storePath -Encoding utf8
 
     return
 }

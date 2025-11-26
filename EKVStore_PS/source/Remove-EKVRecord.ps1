@@ -11,53 +11,53 @@ function Remove-EKVRecord {
         [string] $Key
     )
 
-    $StorePath = Get-StorePath -Name $Name -CheckExists
-    if ($null -eq $StorePath) { return }
+    $storePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $storePath) { return }
 
-    $MasterPassword = Get-MasterPassword -StorePath $StorePath
+    $masterPassword = Get-MasterPassword -StorePath $storePath
         
-    $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
+    $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $Password -Salt $masterPassword.Salt
     if (-not $success) { return $null }
 
-    $Found = $false
-    $EncryptedValueHex = $null
+    $found = $false
+    $encryptedValueHex = $null
 
-    $lines = Get-Content $StorePath
+    $lines = Get-Content $storePath
     $result = foreach ($line in $lines) {
-        if (-not $Found -and $line -match "^$Key\s+") {
-            $Found = $true
+        if (-not $found -and $line -match "^$Key\s+") {
+            $found = $true
             $parts = $line -split "\s+", 2
-            $EncryptedValueHex = $parts[1]
+            $encryptedValueHex = $parts[1]
             continue
         }
         $line
     }
 
-    $result | Set-Content $StorePath
+    $result | Set-Content $storePath
 
-    if (-not $Found) {
+    if (-not $found) {
         Write-Error "No line with key $Key to remove"
         return $null
     }
 
-    if ($null -eq $EncryptedValueHex) {
+    if ($null -eq $encryptedValueHex) {
         Write-Error "Encrypted value for key $Key not found"
         return $null
     }
 
-    $EncryptedValueBytes = for ($i = 0; $i -lt $EncryptedValueHex.Length; $i += 2) { [Convert]::ToByte($EncryptedValueHex.Substring($i,2),16) }
+    $encryptedValueBytes = for ($i = 0; $i -lt $encryptedValueHex.Length; $i += 2) { [Convert]::ToByte($encryptedValueHex.Substring($i,2),16) }
 
     try {
-        $Aes = New-AESObject -Password $Password -Salt $MasterPassword.Salt
-        $Decryptor = $Aes.CreateDecryptor()
-        $DecryptedBytes = $Decryptor.TransformFinalBlock($EncryptedValueBytes, 0, $EncryptedValueBytes.Length)
-        $DecryptedValueText = [System.Text.Encoding]::UTF8.GetString($DecryptedBytes)    
+        $aes = New-AESObject -Password $Password -Salt $masterPassword.Salt
+        $decryptor = $aes.CreateDecryptor()
+        $decryptedBytes = $decryptor.TransformFinalBlock($encryptedValueBytes, 0, $encryptedValueBytes.Length)
+        $decryptedValueText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)    
     }
     finally {
-        $Aes.Dispose()
-        $Decryptor.Dispose()
+        $aes.Dispose()
+        $decryptor.Dispose()
     }  
 
     Write-Host "Successfully deleted key $Key"
-    return $DecryptedValueText
+    return $decryptedValueText
 }

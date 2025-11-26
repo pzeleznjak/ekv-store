@@ -8,12 +8,12 @@ function Remove-EKVStore {
         [securestring] $Password
     )
 
-    $StorePath = Get-StorePath -Name $Name -CheckExists
-    if ($null -eq $StorePath) { return }
+    $storePath = Get-StorePath -Name $Name -CheckExists
+    if ($null -eq $storePath) { return }
 
-    $MasterPassword = Get-MasterPassword -StorePath $StorePath
+    $masterPassword = Get-MasterPassword -StorePath $storePath
         
-    $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
+    $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $Password -Salt $masterPassword.Salt
     if (-not $success) { return $null }
 
     Write-Host "Are you sure you want to remove Encrypted Key-Value store $Name ? (y/n)" -ForegroundColor Red
@@ -25,29 +25,29 @@ function Remove-EKVStore {
     }
 
     try {
-        $Aes = New-AESObject -Password $Password -Salt $MasterPassword.Salt
-        $Decryptor = $Aes.CreateDecryptor()
+        $aes = New-AESObject -Password $Password -Salt $masterPassword.Salt
+        $decryptor = $aes.CreateDecryptor()
 
-        $Records = foreach ($Line in (Get-Content $StorePath | Select-Object -Skip 1)) {
-            $Parts = $Line -split "\s+"
-            $Key = $Parts[0]
-            $EncryptedValueHex = $Parts[1]
+        $records = foreach ($Line in (Get-Content $storePath | Select-Object -Skip 1)) {
+            $parts = $Line -split "\s+"
+            $key = $parts[0]
+            $encryptedValueHex = $parts[1]
 
-            $EncryptedValueBytes = for ($i = 0; $i -lt $EncryptedValueHex.Length; $i += 2) { [Convert]::ToByte($EncryptedValueHex.Substring($i,2),16) }
+            $encryptedValueBytes = for ($i = 0; $i -lt $encryptedValueHex.Length; $i += 2) { [Convert]::ToByte($encryptedValueHex.Substring($i,2),16) }
 
-            $DecryptedBytes = $Decryptor.TransformFinalBlock($EncryptedValueBytes, 0, $EncryptedValueBytes.Length)
-            $DecryptedValueText = [System.Text.Encoding]::UTF8.GetString($DecryptedBytes)
+            $decryptedBytes = $decryptor.TransformFinalBlock($encryptedValueBytes, 0, $encryptedValueBytes.Length)
+            $decryptedValueText = [System.Text.Encoding]::UTF8.GetString($decryptedBytes)
 
-            $Key, $DecryptedValueText
+            $key, $decryptedValueText
         }    
     }
     finally {
-        $Aes.Dispose()
-        $Decryptor.Dispose()
+        $aes.Dispose()
+        $decryptor.Dispose()
     }    
 
-    Remove-Item $StorePath -Force
+    Remove-Item $storePath -Force
     Write-Host "Removed Encrypted Key-Value store $Name"
     
-    return $Records
+    return $records
 }

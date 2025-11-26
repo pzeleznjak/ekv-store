@@ -52,3 +52,9 @@ Contains Powershell Module with following Cmdlets:
 - Get-EKVKeys
 - Remove-EKVRecord
 - Remove-EKVStore
+
+### v1.1.0
+
+Added following Cmdlets:
+- Copy-EKVStore
+- Get-EKVStores
