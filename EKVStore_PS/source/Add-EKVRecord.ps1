@@ -18,35 +18,24 @@ function Add-EKVRecord {
     if ($null -eq $StorePath) { return $null }
 
     $MasterPassword = Get-MasterPassword -StorePath $StorePath
-    
-    $PlainPassword = ConvertTo-PlainString -Secure $Password
 
     $success = Compare-PasswordHashes -MasterPasswordHash $MasterPassword.PasswordHash -Password $Password -Salt $MasterPassword.Salt
     if (-not $success) { return $null }
 
     $ValueBytes = [System.Text.Encoding]::UTF8.GetBytes($Value)
     
-    $Kdf = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
-        [System.Text.Encoding]::UTF8.GetBytes($PlainPassword), 
-        [System.Text.Encoding]::UTF8.GetBytes($MasterPassword.Salt), 
-        8192, 
-        [System.Security.Cryptography.HashAlgorithmName]::SHA256)
-    
-    $EncryptionKey = $Kdf.GetBytes(32)
-    $EncryptionIv = $Kdf.GetBytes(16)
+    try {
+        $Aes = New-AESObject -Password $Password -Salt $MasterPassword.Salt    
+        $Encryptor = $Aes.CreateEncryptor()
+        $EncryptedValueBytes = $Encryptor.TransformFinalBlock($ValueBytes, 0, $ValueBytes.Length)
+        $EncryptedValueHex = [System.BitConverter]::ToString($EncryptedValueBytes) -replace "-", ""
+    }
+    finally {
+        $Aes.Dispose()
+        $Encryptor.Dispose()
+    }
 
-    $Aes = [System.Security.Cryptography.Aes]::Create()
-    $Aes.KeySize = 256
-    $Aes.Mode = [System.Security.Cryptography.CipherMode]::CBC
-    $Aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
-    $Aes.Key = $EncryptionKey
-    $Aes.Iv = $EncryptionIV
-
-    $Encryptor = $Aes.CreateEncryptor()
-    $EncryptedValueBytes = $Encryptor.TransformFinalBlock($ValueBytes, 0, $ValueBytes.Length)
-    $EncryptedValueText = [System.BitConverter]::ToString($EncryptedValueBytes) -replace "-", ""
-
-    $Record = $Key + " " + $EncryptedValueText
+    $Record = $Key + " " + $EncryptedValueHex
     $Record | Out-File -FilePath $StorePath -Encoding utf8 -Append
 
     Write-Host "Successfully added Encrypted Key-Value under key $Key"

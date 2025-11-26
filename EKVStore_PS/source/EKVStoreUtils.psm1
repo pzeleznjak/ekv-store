@@ -1,8 +1,11 @@
 function Get-StoreDirectoryPath {
+    [OutputType([string])]
+    param()
     return Join-Path $PSScriptRoot ".ekvs" 
 }
 
 function Get-StorePath{
+    [OutputType([string], [System.Nullable])]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Name of the new Encrypted Key-Value store to be created")]
         [string] $Name,
@@ -27,6 +30,7 @@ function Get-StorePath{
 }
 
 function New-StoreFile {
+    [OutputType([bool])]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Path to new Encrypted Key-Value store file")]
         [string] $StorePath,
@@ -44,20 +48,27 @@ function New-StoreFile {
     return $true
 }
 
+class MasterPassword {
+    [string] $PasswordHash
+    [string] $Salt
+}
+
 function Get-MasterPassword {
+    [OutputType([MasterPassword])]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Path to Encrypted Key-Value store file")]
         [string] $StorePath
     )
 
     $FirstLineSplit = (Get-Content -Path $StorePath -TotalCount 1 -Encoding UTF8) -split "\s+"
-    return [PSCustomObject]@{
+    return [MasterPassword]@{
         PasswordHash = $FirstLineSplit[0]
         Salt = $FirstLineSplit[1]
     }
 }
 
 function ConvertTo-PlainString {
+    [OutputType([string])]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Secure string to convert to plain string")]
         [securestring] $Secure,
@@ -79,6 +90,7 @@ function ConvertTo-PlainString {
 }
 
 function Get-SHA256HashHex {
+    [OutputType([string])]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Text for which to calculate SHA256 Hash Hex")]
         [string] $Text
@@ -98,6 +110,7 @@ function Get-SHA256HashHex {
 
 function Compare-PasswordHashes {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("PSAvoidUsingPlainTextForPassword", "", Justification = "Hashed value is safe to use as a string")]
+    [OutputType([bool])]
     param(
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Hashed master password")]
         [string] $MasterPasswordHash,
@@ -115,4 +128,34 @@ function Compare-PasswordHashes {
         return $false
     }
     return $true
+}
+
+function New-AESObject {
+    [OutputType([System.Security.Cryptography.Aes])]
+    param(
+        [Parameter(Mandatory=$true, Position=0, HelpMessage="Master password used as key for AES encryption/decryption")]
+        [securestring] $Password,
+        [Parameter(Mandatory=$true, Position=1, HelpMessage="Master password salt")]
+        [string] $Salt
+    )
+
+    $PlainPassword = ConvertTo-PlainString -Secure $Password
+
+    $Kdf = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
+        [System.Text.Encoding]::UTF8.GetBytes($PlainPassword), 
+        [System.Text.Encoding]::UTF8.GetBytes($Salt), 
+        8192, 
+        [System.Security.Cryptography.HashAlgorithmName]::SHA256)
+    
+    $EncryptionKey = $Kdf.GetBytes(32)
+    $EncryptionIv = $Kdf.GetBytes(16)
+
+    $Aes = [System.Security.Cryptography.Aes]::Create()
+    $Aes.KeySize = 256
+    $Aes.Mode = [System.Security.Cryptography.CipherMode]::CBC
+    $Aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7
+    $Aes.Key = $EncryptionKey
+    $Aes.Iv = $EncryptionIV
+
+    return $Aes
 }
