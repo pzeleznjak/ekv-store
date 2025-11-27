@@ -23,7 +23,7 @@ function Get-StorePath{
 
     $storePath = Join-Path $DirectoryPath "$($Name).ekv"
     if ($CheckExists -and -not (Test-Path -Path $storePath)) {
-        Write-Error "Encrypted Key-Value store $Name does not exist"
+        Write-Host "Encrypted Key-Value store $Name does not exist" -ForegroundColor Red
         return $null
     }
     return $storePath
@@ -40,7 +40,7 @@ function New-StoreFile {
     )
 
     if (-not $Force -and (Test-Path -Path $StorePath)) {
-        Write-Error "Encrypted Key-Value store already exists"
+        Write-Host "Encrypted Key-Value store already exists" -ForegroundColor Red
         return $false
     }
     New-Item -Path $StorePath -ItemType File -Force | Out-Null
@@ -124,7 +124,7 @@ function Compare-PasswordHashes {
     $saltedPassword = $plainPassword + $Salt
     $hashText = Get-SHA256HashHex -Text $saltedPassword
     if ($hashText -ne $MasterPasswordHash) {
-        Write-Error "Invalid Key-Value store Master Password"
+        Write-Host "Invalid Key-Value store Master Password" -ForegroundColor Red
         return $false
     }
     return $true

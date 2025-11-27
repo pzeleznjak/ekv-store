@@ -35,5 +35,7 @@ function New-EKVStore {
     $record = $hashText + " " + $saltText
     $record | Out-File -FilePath $storePath -Encoding utf8
 
+    Write-Host "Successfully created new Encrypted Key-Value store $Name" -ForegroundColor Green
+
     return
 }

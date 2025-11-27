@@ -32,8 +32,7 @@ function Get-EKVRecord {
     }
 
     if ($null -eq $encryptedValueHex) {
-        Write-Error "Encrypted value for key $Key not found"
-        return $null
+        Write-Error "Encrypted value for key $Key not found" -ErrorAction Stop
     }
 
     $encryptedValueBytes = for ($i = 0; $i -lt $encryptedValueHex.Length; $i += 2) { [Convert]::ToByte($encryptedValueHex.Substring($i,2),16) }
@@ -50,7 +49,7 @@ function Get-EKVRecord {
     }
     
 
-    Write-Host "Successfully decrypted Encrypted Key-Value under key $Key"
+    Write-Host "Successfully decrypted Encrypted Key-Value under key $Key" -ForegroundColor Green
 
     if ($AsSecureString) {
         return $decryptedValueText | ConvertTo-SecureString -AsPlainText -Force

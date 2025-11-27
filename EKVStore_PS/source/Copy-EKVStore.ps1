@@ -31,5 +31,5 @@ function Copy-EKVStore {
     if (-not $success) { return }
 
     (Get-Content $storePath) | Set-Content $copyStorePath
-    Write-Host "Copied contents of $Name to $CopyName Encrypted Key-Value store"
+    Write-Host "Copied contents of $Name to $CopyName Encrypted Key-Value store" -ForegroundColor Green
 }

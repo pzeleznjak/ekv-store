@@ -36,13 +36,11 @@ function Remove-EKVRecord {
     $result | Set-Content $storePath
 
     if (-not $found) {
-        Write-Error "No line with key $Key to remove"
-        return $null
+        Write-Error "No line with key $Key to remove" -ErrorAction Stop
     }
 
     if ($null -eq $encryptedValueHex) {
-        Write-Error "Encrypted value for key $Key not found"
-        return $null
+        Write-Error "Encrypted value for key $Key not found" -ErrorAction Stop
     }
 
     $encryptedValueBytes = for ($i = 0; $i -lt $encryptedValueHex.Length; $i += 2) { [Convert]::ToByte($encryptedValueHex.Substring($i,2),16) }
@@ -58,6 +56,6 @@ function Remove-EKVRecord {
         $decryptor.Dispose()
     }  
 
-    Write-Host "Successfully deleted key $Key"
+    Write-Host "Successfully deleted key $Key" -ForegroundColor Green
     return $decryptedValueText
 }

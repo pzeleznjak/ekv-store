@@ -18,8 +18,7 @@ function Add-EKVRecord {
     )
 
     if ($Key -match '\s|,') {
-        Write-Error "Key must not contain whitespace or commas."
-        return $null
+        Write-Error "Key must not contain whitespace or commas." -ErrorAction Stop
     }
 
     $storePath = Get-StorePath -Name $Name -CheckExists
@@ -50,7 +49,7 @@ function Add-EKVRecord {
     $record = $Key + " " + $encryptedValueHex
     $record | Out-File -FilePath $storePath -Encoding utf8 -Append
 
-    Write-Host "Successfully added Encrypted Key-Value under key $Key"
+    Write-Host "Successfully added Encrypted Key-Value under key $Key" -ForegroundColor Green
 
     return $Key
 }
