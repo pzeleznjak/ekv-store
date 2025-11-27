@@ -17,6 +17,11 @@ function Add-EKVRecord {
         [string] $RawValue
     )
 
+    if ($Key -match '\s|,') {
+        Write-Error "Key must not contain whitespace or commas."
+        return $null
+    }
+
     $storePath = Get-StorePath -Name $Name -CheckExists
     if ($null -eq $storePath) { return $null }
 
