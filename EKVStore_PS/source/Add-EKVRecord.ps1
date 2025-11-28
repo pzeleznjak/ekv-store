@@ -17,8 +17,8 @@ function Add-EKVRecord {
         [string] $RawValue
     )
 
-    if ($Key -match '\s|,') {
-        Write-Error "Key must not contain whitespace or commas." -ErrorAction Stop
+    if ($Key -match '\s|,|=') {
+        Write-Error "Key must not contain whitespace, commas or equality operator signs." -ErrorAction Stop
     }
 
     $storePath = Get-StorePath -Name $Name -CheckExists
