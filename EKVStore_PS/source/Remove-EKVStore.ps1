@@ -5,7 +5,10 @@ function Remove-EKVStore {
         [string] $Name,
 
         [Parameter(Mandatory=$true, Position=1, HelpMessage="Master Password of the new Encrypted Key-Value store")]
-        [securestring] $Password
+        [securestring] $Password,
+
+        [Parameter(Position=2, HelpMessage="Force removal of the new Encrypted Key-Value store")]
+        [switch] $Force = $false
     )
 
     $storePath = Get-StorePath -Name $Name -CheckExists
@@ -16,12 +19,14 @@ function Remove-EKVStore {
     $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $Password -Salt $masterPassword.Salt
     if (-not $success) { return $null }
 
-    Write-Host "Are you sure you want to remove Encrypted Key-Value store $Name ? (y/n)" -ForegroundColor DarkRed
-    $answer = Read-Host
+    if (-not $Force) {
+        Write-Host "Are you sure you want to remove Encrypted Key-Value store $Name ? (y/n)" -ForegroundColor DarkRed
+        $answer = Read-Host
 
-    if ($answer -notmatch '^[Yy]') {
-        Write-Host "Operation cancelled." -ForegroundColor Yellow
-        return $null
+        if ($answer -notmatch '^[Yy]') {
+            Write-Host "Operation cancelled." -ForegroundColor Yellow
+            return $null
+        }
     }
 
     try {
