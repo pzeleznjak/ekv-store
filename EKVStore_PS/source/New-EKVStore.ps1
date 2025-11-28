@@ -7,7 +7,7 @@ function New-EKVStore {
         [Parameter(Mandatory=$true, Position=1, HelpMessage="Master Password of the new Encrypted Key-Value store")]
         [securestring] $Password,
 
-        [Parameter(Position=2, HelpMessage="Force creation of the copied Encrypted Key-Value store")]
+        [Parameter(Position=2, HelpMessage="Force creation of the new Encrypted Key-Value store")]
         [switch] $Force = $false
     )
 
@@ -19,7 +19,7 @@ function New-EKVStore {
     $success = $false
     if ($Force) { $success = New-StoreFile -StorePath $storePath -Force } 
     else { $success = New-StoreFile -StorePath $storePath }
-    if (-not $success) { return }
+    if (-not $success) { return $false }
 
     $plainPassword = ConvertTo-PlainString -Secure $Password
 
@@ -37,5 +37,5 @@ function New-EKVStore {
 
     Write-Host "Successfully created new Encrypted Key-Value store $Name" -ForegroundColor Green
 
-    return
+    return $true
 }
