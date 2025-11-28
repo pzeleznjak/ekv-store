@@ -1,3 +1,39 @@
+<#
+.SYNOPSIS
+Removes an Encrypted Key-Value record form an Encrypted Key-Value (EKV) 
+store.
+
+.DESCRIPTION
+Checks whether the provided password is the master password of the provided
+Encrypted Key-Value store, finds the provided key in given EKV and removes
+it along with the associated value.
+
+.PARAMETER Name
+Name of the Encrypted Key-Value store to access.
+
+.PARAMETER Password
+Master Password of the Encrypted Key-Value store to access.
+
+.PARAMETER Key
+Key of the Encrypted Key-Value record to remove.
+
+.INPUTS
+None
+
+.OUTPUTS
+String
+Decrypted value associated with removed key.
+
+.EXAMPLE
+Remove-EKVRecord -Name testekv -Password $ekvpass -Key testkey
+
+Removes an EKV record stored under "testkey" in EKV store "testekv".
+
+.NOTES
+To define a Secure String -Password value use for example:
+PS > $ekvpass = Read-Host -AsSecureString
+PS > ********
+#>
 function Remove-EKVRecord {
     [CmdletBinding()]
     param (
@@ -12,7 +48,7 @@ function Remove-EKVRecord {
     )
 
     $storePath = Get-StorePath -Name $Name -CheckExists
-    if ($null -eq $storePath) { return }
+    if ($null -eq $storePath) { return $null }
 
     $masterPassword = Get-MasterPassword -StorePath $storePath
         

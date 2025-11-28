@@ -1,3 +1,53 @@
+<#
+.SYNOPSIS
+Gets an Encrypted Key-Value record from an Encrypted Key-Value (EKV) store.
+
+.DESCRIPTION
+Checks whether the provided password is the master password of the provided
+Encrypted Key-Value store, finds the provided key in given EKV, decrypts
+the value stored under it and returns it.
+
+.PARAMETER Name
+Name of the Encrypted Key-Value store to access.
+
+.PARAMETER Password
+Master Password of the Encrypted Key-Value store to access.
+
+.PARAMETER Key
+Key of the Encrypted Key-Value record to get.
+
+.PARAMETER AsSecureString
+Flag which indicates that the function must return the decrypted value
+as a Secure String as opposed to a plaintext string.
+
+.INPUTS
+None
+
+.OUTPUTS
+String
+Decrypted value stored under a key as a plaintext string.
+SecureString
+Decrypted value stored under a key as a SecureString.
+null
+Unsuccessful operation.
+
+.EXAMPLE
+Get-EKVRecord -Name testekv -Password $ekvpass -Key testkey
+
+Get a value stored under "testkey" in EKV store "testekv" as a plaintext
+string.
+
+.EXAMPLE
+Get-EKVRecord -Name testekv -Password $ekvpass -Key testkey -AsSecureString
+
+Get a value stored under "testkey" in EKV store "testekv" as a Secure
+String.
+
+.NOTES
+To define a Secure String -Password or -Value value use for example:
+PS > $ekvpass = Read-Host -AsSecureString
+PS > ********
+#>
 function Get-EKVRecord {
     [CmdletBinding()]
     param (

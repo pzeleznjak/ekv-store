@@ -1,3 +1,47 @@
+<#
+.SYNOPSIS
+Exports an Encrypted Key-Value (EKV) store to an unprotected .kv plaintext file.
+
+.DESCRIPTION
+Checks whether the provided password is the master password of the provided
+Encrypted Key-Value store, decrypts all encrypted records and stores them
+in a provided .kv plaintext export file.
+
+.PARAMETER Name
+Name of the Encrypted Key-Value store to export.
+
+.PARAMETER Password
+Master Password of the Encrypted Key-Value store to export.
+
+.PARAMETER ExportFile
+Target .kv file to which to export the EKV store.
+If value is not provided it automatically has value "$Name.kv" in caller
+working directory.
+If the provided file does not have extension .kv, the extension is 
+automatically appended.
+
+.INPUTS
+None
+
+.OUTPUTS
+None
+
+.EXAMPLE
+Export-ToUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
+
+Export an EKV named "testekv" to the C:\ekv-exports\export.kv file.
+
+.EXAMPLE
+Export-ToUnprotectedFile -Name testekv -Password $ekvpass
+
+Export an EKV named "testekv" to the automatically assigned .\testekv.kv
+file.
+
+.NOTES
+To define a Secure String -Password value use for example:
+PS > $ekvpass = Read-Host -AsSecureString
+PS > ********
+#>
 function Export-ToUnprotectedFile {
     param (
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Name of the Encrypted Key-Value store to export")]
@@ -11,7 +55,7 @@ function Export-ToUnprotectedFile {
     )
 
     if (-not $PSBoundParameters.ContainsKey("ExportFile")) {
-        $ExportFile = ".\$Name.kv"
+        $ExportFile = Join-Path -Path $PWD -ChildPath ".\$Name.kv"
     }
 
     if ([IO.Path]::GetExtension($ExportFile) -ne ".kv") {
@@ -36,5 +80,4 @@ function Export-ToUnprotectedFile {
     Set-Content -Path $ExportFile -Value $sb.ToString()
 
     Write-Host "Successfully exported Encrypted Key-Value store $Name to $ExportFile" -ForegroundColor Green
-    return $ExportFile
 }

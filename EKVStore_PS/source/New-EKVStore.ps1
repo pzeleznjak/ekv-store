@@ -1,3 +1,42 @@
+<#
+.SYNOPSIS
+Creates a new empty Encrypted Key-Value (EKV) store.
+
+.DESCRIPTION
+Creates a new empty Encrypted Key-Value store and sets its master password.
+
+.PARAMETER Name
+Name of the Encrypted Key-Value store to create.
+
+.PARAMETER Password
+Master Password of the Encrypted Key-Value store to create.
+
+.PARAMETER Force
+Flag which forces the command to create the specified Encrypted Key-Value
+store even if the target copy store already exists, overwriting it.
+
+.INPUTS
+None
+
+.OUTPUTS
+Boolean
+Flag which indicates whether the operation was successful.
+
+.EXAMPLE
+New-EKVStore -Name testekv -Password $ekvpass
+
+Create new EKV store named "testekv".
+
+.EXAMPLE
+New-EKVStore -Name testekv -Password $ekvpass -Force
+
+Create new EKV store named "testekv" even if such already exists.
+
+.NOTES
+To define a Secure String -Password value use for example:
+PS > $ekvpass = Read-Host -AsSecureString
+PS > ********
+#>
 function New-EKVStore {
     [CmdletBinding()]
     param(
