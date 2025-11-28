@@ -65,6 +65,8 @@ nunit-*.xml
 
 # CUSTOM
 
+*.ekv
 .ekvs/
+*.kv
 Builds/
 Releases/
