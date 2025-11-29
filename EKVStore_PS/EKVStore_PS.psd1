@@ -15,7 +15,7 @@ RootModule = 'EKVStore_PS.psm1'
 ModuleVersion = '1.1.0'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+CompatiblePSEditions = @("Core")
 
 # ID used to uniquely identify this module
 GUID = 'b995322d-341c-4348-a1f9-86f0da936fda'
@@ -24,7 +24,7 @@ GUID = 'b995322d-341c-4348-a1f9-86f0da936fda'
 Author = 'Petar Železnjak'
 
 # Company or vendor of this module
-# CompanyName = 'Unknown'
+CompanyName = 'Petar Železnjak'
 
 # Copyright statement for this module
 Copyright = '(c) Petar Železnjak. All rights reserved.'
@@ -33,7 +33,7 @@ Copyright = '(c) Petar Železnjak. All rights reserved.'
 Description = 'Contains functions for managing an Encrypted Key-Value Store'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '7.5.4'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
