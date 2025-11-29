@@ -1,10 +1,37 @@
 # Encrypted Key-Value (EKV) Store
-Implementation of Powershell tools used to manage Key-Value stores with
-property that the stored values are cryptographically encrypted.
+Implementation of Powershell tools used to manage Key-Value stores with the property that the stored values are cryptographically encrypted.
+
+## Contents
+1. [Compatibility](#compatibility)
+2. [Usage](#usage)
+    1. [New-EKVStore](#new-ekvstore)
+    2. [Add-EKVRecord](#add-ekvrecord)
+    3. [Get-EKVRecord](#get-ekvrecord)
+    4. [Get-EKVKeys](#get-ekvkeys)
+    5. [Remove-EKVRecord](#remove-ekvrecord)
+    6. [Remove-EKVStore](#remove-ekvstore)
+    7. [Copy-EKVStore](#copy-ekvstore)
+    8. [Get-EKVStores](#get-ekvstores)
+    9. [Export-ToUnprotectedFile](#export-tounprotectedfile)
+    10. [Import-FromUnprotectedFile](#import-fromunprotectedfile)
+    11. [Typical usage](#typical-usage)
+3. [Implementation notes](#implementation-notes)
+    1. [Physical storage](#physical-storage)
+    2. [Master password check](#master-password-check)
+    3. [Record encryption](#record-encryption)
+    4. [Record decryption](#record-decryption)
+4. [Author](#author)
+5. [Changelog](#changelog)
+
+## Compatibility
+
+| Powershell | .NET Core |
+| ---------- | --------- |
+| 7.5.4      | 9.0.10    |
 
 ## Usage
 
-Before using this module it is required to set the Execution Policy of Powershell to one that does not restrict the execution of scripts which are not digitally signed.
+Before using this module it is required to set the Execution Policy of Powershell to the one that does not restrict the execution of scripts which are not digitally signed.
 
 `Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process`
 
@@ -12,29 +39,29 @@ _Always verify the scripts before enabling their execution!_
 
 Import the module using Import-Module Cmdlet with -Path argument pointing to the directory where the EKVStore_PS.psd1 file is located.
 
-Most of the Cmdlets have a -Password parameter which expects a Secure String value of the Encrypted Key-Value store master password. To define a Secure String variable to be used as the master password, you can use the following command:
+Most of the Cmdlets have a -Password parameter which expects a [Secure String](https://learn.microsoft.com/en-us/dotnet/api/system.security.securestring?view=net-9.0) value of the Encrypted Key-Value store master password. To define a Secure String variable to be used as the master password, you can use the following command:
 
 `$ekvpass = Read-Host -AsSecureString`
 
 ### New-EKVStore
 - Creates a new empty Encrypted Key-Value store and sets its master password
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to create
-    - Password - Master Password of the Encrypted Key-Value store to create
-    - Force - Flag which forces the command to create the specified Encrypted Key-Value store even if the target copy store already exists, overwriting it
+    - Name - String - Name of the Encrypted Key-Value store to create
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to create
+    - Force - SwitchParameter - Flag which forces the command to create the specified Encrypted Key-Value store even if the target copy store already exists, overwriting it
 - Inputs - None
 - Outputs - Boolean - Flag which indicates whether the operation was successful
 
 ### Add-EKVRecord
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store, encrypts the provided value and stores it under the provided key
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to access
-    - Password - Master Password of the Encrypted Key-Value store to access
-    - Key - Key of the Encrypted Key-Value record to add
-    - Value - Secure String Value of the Encrypted Key-Value record to add
+    - Name - String - Name of the Encrypted Key-Value store to access
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to access
+    - Key - String - Key of the Encrypted Key-Value record to add
+    - Value - SecureString - Secure String Value of the Encrypted Key-Value record to add
         - Must be provided if RawValue is not
-        - If both are provided, Value is used.
-    - RawValue - Raw value of the Encrypted Key-Value record to add
+        - If both are provided, Value is used
+    - RawValue - String - Raw value of the Encrypted Key-Value record to add
         - Must be provided if Value is not
         - If both are provided, Value is used
 - Inputs - None
@@ -43,10 +70,10 @@ Most of the Cmdlets have a -Password parameter which expects a Secure String val
 ### Get-EKVRecord
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store, finds the provided key in given EKV, decrypts the value stored under it and returns it
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to access
-    - Password - Master Password of the Encrypted Key-Value store to access
-    - Key - Key of the Encrypted Key-Value record to get
-    - AsSecureString - Flag which indicates that the function must return the decrypted value as a Secure String as opposed to a plaintext string
+    - Name - String - Name of the Encrypted Key-Value store to access
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to access
+    - Key - String - Key of the Encrypted Key-Value record to get
+    - AsSecureString - SwitchParameter - Flag which indicates that the function must return the decrypted value as a Secure String as opposed to a plaintext string
 - Inputs - None
 - Outputs
     - String - Decrypted value stored under a key as a plaintext string
@@ -56,36 +83,36 @@ Most of the Cmdlets have a -Password parameter which expects a Secure String val
 ### Get-EKVKeys
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store and lists all stored keys
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to access
-    - Password - Master Password of the Encrypted Key-Value store to access
+    - Name - String - Name of the Encrypted Key-Value store to access
+    - Password - SecureSting - Master Password of the Encrypted Key-Value store to access
 - Inputs - None
-- Outputs - List<string\> -All keys stored in the EKV store
+- Outputs - List<String\> -All keys stored in the EKV store
 
 ### Remove-EKVRecord
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store, finds the provided key in given EKV and removes it along with the associated value
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to access
-    - Password - Master Password of the Encrypted Key-Value store to access
-    - Key - Key of the Encrypted Key-Value record to remove
+    - Name - String - Name of the Encrypted Key-Value store to access
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to access
+    - Key - String - Key of the Encrypted Key-Value record to remove
 - Inputs - None
 - Outputs - String - Decrypted value associated with removed key
 
 ### Remove-EKVStore
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store and removes the EKV store
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to remove
-    - Password - Master Password of the Encrypted Key-Value store to remove
-    - Force - Flag which forces the command to remove the specified Encrypted Key-Value store without prompting the user for confirmation
+    - Name - String - Name of the Encrypted Key-Value store to remove
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to remove
+    - Force - SwitchParameter - Flag which forces the command to remove the specified Encrypted Key-Value store without prompting the user for confirmation
 - Inputs - None
 - Outputs - List<(string, string)> - List of all Key-Value records contained in the removed store
 
 ### Copy-EKVStore
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store, creates a new Encrypted Key-Value store and copies the contents of the original to the copy
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to copy
-    - Password - Master Password of the Encrypted Key-Value store to copy
-    - CopyName - Name of the new copy Encrypted Key-Value store
-    - Force - Flag which forces the command to copy the specified Encrypted Key-Value store even if the target copy store already exists, overwriting it
+    - Name - String - Name of the Encrypted Key-Value store to copy
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to copy
+    - CopyName - String - Name of the new copy Encrypted Key-Value store
+    - Force - SwitchParameter - Flag which forces the command to copy the specified Encrypted Key-Value store even if the target copy store already exists, overwriting it
 - Inputs - None
 - Outputs - Boolean - Flag which indicates whether the operation was successful
 
@@ -98,9 +125,9 @@ Most of the Cmdlets have a -Password parameter which expects a Secure String val
 ### Export-ToUnprotectedFile
 - Checks whether the provided password is the master password of the provided Encrypted Key-Value store, decrypts all encrypted records and stores them in a provided .kv plaintext export file
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to export
-    - Password - Master Password of the Encrypted Key-Value store to export
-    - ExportFile - Target .kv file to which to export the EKV store
+    - Name - String - Name of the Encrypted Key-Value store to export
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to export
+    - ExportFile - String - Target .kv file to which to export the EKV store
         - If value is not provided it automatically has value "$Name.kv" in caller working directory.
         - If the provided file does not have extension .kv, the extension is automatically appended
 - Inputs - None
@@ -110,10 +137,10 @@ Most of the Cmdlets have a -Password parameter which expects a Secure String val
 - Creates a new Encrypted Key-Value store and stores all Key-Value records
 contained in the provided .kv plaintext file to the new store
 - Parameters
-    - Name - Name of the Encrypted Key-Value store to create
-    - Password - Master Password of the Encrypted Key-Value store to create
-    - ExportFile - Path to unprotected file to import to new Encrypted Key-Value store
-    - Force - Force creation of the new Encrypted Key-Value store even if such already exists, overwriting it
+    - Name - String - Name of the Encrypted Key-Value store to create
+    - Password - SecureString - Master Password of the Encrypted Key-Value store to create
+    - ExportFile - String - Path to unprotected file to import to new Encrypted Key-Value store
+    - Force - SwitchParameter - Force creation of the new Encrypted Key-Value store even if such already exists, overwriting it
 - Inputs - None
 - Outputs - None
 
@@ -152,7 +179,7 @@ Successfully decrypted Encrypted Key-Value under key testkey1
 
 ### Physical storage
 
-New-EKVStore command creates an .ekv file in the directory `X/.ekvs/` where X is the directory where the command source code is located.
+New-EKVStore command creates an .ekv file in the directory `X/.ekvs/` where X is the directory in which the command source code is located.
 
 Every .ekv file has two sections:
 1. Master Password Line
@@ -221,9 +248,18 @@ Each value is decrypted using the previously explained AES encoding encryption a
 ## Author
 Petar Železnjak
 
-Zagreb, 2025
+Zagreb, Croatia, 2025
 
 ## Changelog
+
+### v1.1.0
+
+Added following Cmdlets:
+- Copy-EKVStore
+- Get-EKVStores
+- Export-ToUnprotectedFile
+- Import-FromUnprotectedFile
+
 ### v1.0.0
 
 Contains Powershell Module with following Cmdlets:
@@ -233,11 +269,3 @@ Contains Powershell Module with following Cmdlets:
 - Get-EKVKeys
 - Remove-EKVRecord
 - Remove-EKVStore
-
-### v1.1.0
-
-Added following Cmdlets:
-- Copy-EKVStore
-- Get-EKVStores
-- Export-ToUnprotectedFile
-- Import-FromUnprotectedFile
