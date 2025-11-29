@@ -101,5 +101,5 @@ function Add-EKVRecord {
 
     Write-Host "Successfully added Encrypted Key-Value under key $Key" -ForegroundColor Green
 
-    return $false
+    return $true
 }
