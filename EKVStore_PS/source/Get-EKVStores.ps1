@@ -18,6 +18,8 @@ Get-EKVStores
 Lists all EKV store names.
 #>
 function Get-EKVStores {
+    [CmdletBinding()]
+    param()
     $directoryPath = Get-StoreDirectoryPath
     $stores = Get-ChildItem $directoryPath -File -Filter *.ekv
         | Select-Object -ExpandProperty BaseName

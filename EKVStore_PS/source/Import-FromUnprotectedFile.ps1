@@ -48,6 +48,7 @@ PS > $ekvpass = Read-Host -AsSecureString
 PS > ********
 #>
 function Import-FromUnprotectedFile {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Name of the Encrypted Key-Value store to create")]
         [string] $Name,

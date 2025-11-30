@@ -43,6 +43,7 @@ PS > $ekvpass = Read-Host -AsSecureString
 PS > ********
 #>
 function Export-ToUnprotectedFile {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Name of the Encrypted Key-Value store to export")]
         [string] $Name,

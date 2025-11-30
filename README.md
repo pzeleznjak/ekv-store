@@ -256,6 +256,10 @@ Zagreb, Croatia, 2025
 
 ### v1.1.1
 - Added flag -RemoveFile to Export-FromUnprotectedFile
+- Fixed forgotten Cmdlet bindings in:
+    - Export-ToUnprotectedFile
+    - Get-EKVStores
+    - Import-FromUnprotectedFile
 
 ### v1.1.0
 
