@@ -1,9 +1,10 @@
 # EKV STORE
 ## TO DO
 
-1. Create EKV key renaming function
+1. Replace all @() with New-Object System.Collections.Generic.List[string] where applicable
 2. Create a release v1.2.0
 3. Implement in C#
+4. Check return values
 4. Modify .ekv so that first line denotes a .ekv version
 5. Create a .ekv version migrating tool
 6. Disable duplicate key insertion
@@ -22,5 +23,6 @@
 11. Add metadata to EKV records
     - date created
     - description
-12. Create a release v2.0.0
-13. Write README.md section about theory behind cryptographic hashing, salt and encoding
+12. Forbid any and all non-alphanumeric characters for key name
+13. Create a release v2.0.0
+14. Write README.md section about theory behind cryptographic hashing, salt and encoding

@@ -15,7 +15,8 @@ Implementation of Powershell tools used to manage Key-Value stores with the prop
     9. [Export-ToUnprotectedFile](#export-tounprotectedfile)
     10. [Import-FromUnprotectedFile](#import-fromunprotectedfile)
     11. [Rename-EKVStore](#rename-ekvstore)
-    12. [Typical usage](#typical-usage)
+    12. [Rename-EKVKey](#rename-ekvkey)
+    13. [Typical usage](#typical-usage)
 3. [Implementation notes](#implementation-notes)
     1. [Physical storage](#physical-storage)
     2. [Master password check](#master-password-check)
@@ -157,6 +158,15 @@ Encrypted Key-Value store, and renames it to new provided name.
 - Inputs - None
 - Outputs - Boolean - Flag which indicates whether the operation was successful
 
+### Rename-EKVKey
+Checks whether the provided password is the master password of the provided
+Encrypted Key-Value store, finds the provided key in given EKV and renames it.
+- Parameters
+    - Name - Name of the Encrypted Key-Value store to access
+    - Password - Master Password of the Encrypted Key-Value store to access
+    - Key - Key of the Encrypted Key-Value record to rename
+    - NewKey - New key of the Encrypted Key-Value record
+
 ### Typical usage
 
 ```ps1
@@ -266,7 +276,9 @@ Zagreb, Croatia, 2025
 ## Changelog
 
 ### v1.2.0
-- Added Cmdlet Rename-EKVStore
+- Added following Cmdlets
+    - Rename-EKVStore
+    - Rename-EKVKey
 
 ### v1.1.1
 - Added flag -RemoveFile to Export-FromUnprotectedFile
