@@ -16,6 +16,9 @@ Master Password of the Encrypted Key-Value store to create.
 .PARAMETER ExportFile
 Path to unprotected file to import to new Encrypted Key-Value store.
 
+.PARAMETER RemoveFile
+Remove the unprotected file after importing.
+
 .PARAMETER Force
 Force creation of the new Encrypted Key-Value store even if such already
 exists, overwriting it.
@@ -24,7 +27,8 @@ exists, overwriting it.
 None
 
 .OUTPUTS
-None
+Boolean
+Flag which indicates whether the operation was successful.
 
 .EXAMPLE
 Import-FromUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
@@ -54,7 +58,10 @@ function Import-FromUnprotectedFile {
         [Parameter(Position=2, HelpMessage="Path to unprotected file to import to new Encrypted Key-Value store")]
         [string] $ExportFile,
 
-        [Parameter(Position=2, HelpMessage="Force creation of the new Encrypted Key-Value store")]
+        [Parameter(Position=3, HelpMessage="Remove the unprotected file after importing")]
+        [switch] $RemoveFile = $false,
+
+        [Parameter(Position=4, HelpMessage="Force creation of the new Encrypted Key-Value store")]
         [switch] $Force = $false
     )
 
@@ -84,12 +91,19 @@ function Import-FromUnprotectedFile {
     $success = $false
     if ($Force) { $success = New-EKVStore -Name $Name -Password $Password -Force } 
     else { $success = New-EKVStore -Name $Name -Password $Password }
-    if (-not $success) { return }
+    if (-not $success) { return $false }
 
     $kvLines | ForEach-Object {
         $split = $_ -split "="
-        Add-EKVRecord -Name $Name -Password $Password -Key $split[0] -RawValue $split[1]
+        Add-EKVRecord -Name $Name -Password $Password -Key $split[0] -RawValue $split[1] | Out-Null
     }
 
-    Write-Host "Imported $ExportFile to new Encrypted Key-Value store $Name successfully"
+    if ($RemoveFile) {
+        Remove-Item -Path $ExportFile
+        Write-Host "Removed the $ExportFile unprotected file"
+    }
+
+    Write-Host "Imported $ExportFile to new Encrypted Key-Value store $Name successfully" -ForegroundColor Green
+
+    return $true
 }

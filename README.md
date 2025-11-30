@@ -141,9 +141,10 @@ contained in the provided .kv plaintext file to the new store
     - Name - String - Name of the Encrypted Key-Value store to create
     - Password - SecureString - Master Password of the Encrypted Key-Value store to create
     - ExportFile - String - Path to unprotected file to import to new Encrypted Key-Value store
+    - RemoveFile - SwitchParameter - Remove the unprotected file after importing
     - Force - SwitchParameter - Force creation of the new Encrypted Key-Value store even if such already exists, overwriting it
 - Inputs - None
-- Outputs - None
+- Outputs - Boolean - Flag which indicates whether the operation was successful
 
 ### Typical usage
 
@@ -252,6 +253,9 @@ Petar Železnjak
 Zagreb, Croatia, 2025
 
 ## Changelog
+
+### v1.1.1
+- Added flag -RemoveFile to Export-FromUnprotectedFile
 
 ### v1.1.0
 
