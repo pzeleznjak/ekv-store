@@ -25,9 +25,10 @@ Implementation of Powershell tools used to manage Key-Value stores with the prop
 
 ## Compatibility
 
-| Powershell | .NET Core |
+| Component  | Version   |
 | ---------- | --------- |
-| 7.5.4      | 9.0.10    |
+| Powershell | 7.5.4     |
+| .NET Core  | 9.0.10    |
 
 ## Usage
 
