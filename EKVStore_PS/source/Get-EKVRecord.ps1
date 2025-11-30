@@ -73,10 +73,10 @@ function Get-EKVRecord {
     if (-not $success) { return $null }
 
     $encryptedValueHex = $null
-    foreach ($Line in Get-Content -Path $storePath -Encoding UTF8 | Select-Object -Skip 1) {
-        $Split = $Line -split '\s+'
-        if ($Split[0] -eq $Key) {
-            $encryptedValueHex = $Split[1]
+    foreach ($line in Get-Content -Path $storePath -Encoding UTF8 | Select-Object -Skip 1) {
+        $split = $line -split '\s+'
+        if ($split[0] -eq $Key) {
+            $encryptedValueHex = $split[1]
             break;
         }
     }

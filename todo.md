@@ -1,7 +1,6 @@
 # EKV STORE
 ## TO DO
 
-1. Replace all @() with New-Object System.Collections.Generic.List[string] where applicable
 2. Create a release v1.2.0
 3. Implement in C#
 4. Check return values
