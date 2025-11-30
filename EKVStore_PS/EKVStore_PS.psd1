@@ -69,7 +69,18 @@ PowerShellVersion = '7.5.4'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @("Add-EKVRecord", "Copy-EKVStore", "Get-EKVKeys", "Get-EKVRecord", "Get-EKVStores", "New-EKVStore", "Remove-EKVRecord", "Remove-EKVStore", "Export-ToUnprotectedFile", "Import-FromUnprotectedFile")
+FunctionsToExport = @(
+    "Add-EKVRecord", 
+    "Copy-EKVStore", 
+    "Get-EKVKeys", 
+    "Get-EKVRecord", 
+    "Get-EKVStores", 
+    "New-EKVStore", 
+    "Remove-EKVRecord", 
+    "Remove-EKVStore", 
+    "Export-ToUnprotectedFile",
+    "Import-FromUnprotectedFile",
+    "Rename-EKVStore")
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
