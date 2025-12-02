@@ -181,6 +181,19 @@ Encrypted Key-Value store, finds the provided key in given EKV and renames it.
     - **Key** - Key of the Encrypted Key-Value record to rename
     - **NewKey** - New key of the Encrypted Key-Value record
 
+- Inputs - None
+- Outputs - Boolean - Flag which indicates whether the operation was successful
+
+### Test-EKVPassword
+Checks whether the provided password is the master password of the provided Encrypted Key-Value store and returns true if successful or false 
+otherwise.
+
+- Parameters
+    - **Name** - Name of the Encrypted Key-Value store to access
+    - **Password** - Master Password of the Encrypted Key-Value store to test
+- Inputs - None
+- Outputs - Boolean - Flag which indicates whether the provided password is the master password of the provided EKV store.
+
 ### Typical usage
 
 ```ps1
