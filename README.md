@@ -194,6 +194,31 @@ otherwise.
 - Inputs - None
 - Outputs - Boolean - Flag which indicates whether the provided password is the master password of the provided EKV store.
 
+### Export-EKVToFile
+Checks whether the provided EKV store exists and exports it to the provided
+directory where filename is $Name.ekv.
+
+- Parameters
+    - **Name** - Name of the Encrypted Key-Value store to export
+    - **ExportDirectory** - Target directory to which to export the EKV.
+        - Resulting file is named $Name.ekv
+        - If not defined, takes the directory from which the command was called and exports the EKV to that directory
+    - **Force** - Flag which forces the export of the Encrypted Key-Value store even if the export file already exists
+- Inputs - None
+- Outputs - Boolean - Flag which indicates whether the operation was successful
+
+### Import-EKVFromFile
+Checks whether the provided exported .ekv encrypted file exists and whether
+the EKV store, named the same as the file, already exists and imports it.
+
+- Parameters
+    - **ExportPath** - File which is to be imported to an EKV store
+        - Resulting store is named the same as the file (without extension)
+    - **RemoveFile** - Remove the exported encrypted .ekv file after importing
+    - **Force** - Flag which forces the import of the Encrypted Key-Value store even if the store already exists
+- Inputs - None
+- Outputs - Boolean - Flag which indicates whether the operation was successful
+
 ### Typical usage
 
 ```ps1
@@ -306,6 +331,9 @@ Zagreb, Croatia, 2025
 - Added following Cmdlets
     - `Rename-EKVStore`
     - `Rename-EKVKey`
+    - `Test-EKVPassword`
+    - `Export-EKVToFile`
+    - `Import-EKVFromFile`
 
 ### v1.1.1
 - Added flag `-RemoveFile` to `Export-FromUnprotectedFile`

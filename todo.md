@@ -1,7 +1,7 @@
 # EKV STORE
 ## TO DO
 
-1. Add Export-EKVToFile and Import-EKVFromFile
+1. Add -Force to Export-ToUnprotectedFile
 1. Create a release v1.2.0
 3. Implement in C#
 4. Check return values
