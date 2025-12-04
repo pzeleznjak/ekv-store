@@ -20,11 +20,15 @@ working directory.
 If the provided file does not have extension .kv, the extension is 
 automatically appended.
 
+.PARAMETER Force
+Force creation of the unprotected .kv file even if such already exists.
+
 .INPUTS
 None
 
 .OUTPUTS
-None
+Boolean
+Flag which indicates whether the operation was successful.
 
 .EXAMPLE
 Export-ToUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
@@ -52,7 +56,10 @@ function Export-ToUnprotectedFile {
         [securestring] $Password,
 
         [Parameter(Position=2, HelpMessage="Path to unprotected file to export Encrypted Key-Value store to")]
-        [string] $ExportFile
+        [string] $ExportFile,
+
+        [Parameter(Position=3, HelpMessage="Force creation of the unprotected file")]
+        [switch] $Force = $false
     )
 
     if (-not $PSBoundParameters.ContainsKey("ExportFile")) {
@@ -63,6 +70,11 @@ function Export-ToUnprotectedFile {
         Write-Host "ExportFile must have extension .kv" -ForegroundColor Yellow
         Write-Host "Appended '.kv' to ExportFile path"
         $ExportFile = "$ExportFile.kv"
+    }
+
+    if ((-not $Force) -and (Test-Path $ExportFile)) {
+        Write-Host "File $ExportFile already exists" -ForegroundColor Red
+        return $false
     }
 
     Write-Host "Exporting $Name to $ExportFile"

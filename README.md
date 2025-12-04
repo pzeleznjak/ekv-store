@@ -144,8 +144,9 @@ Checks whether the provided password is the master password of the provided Encr
     - **ExportFile** - String - Target .kv file to which to export the EKV store
         - If value is not provided it automatically has value "$Name.kv" in caller working directory.
         - If the provided file does not have extension .kv, the extension is automatically appended
+    - **Force** - Force creation of the unprotected .kv file even if such already exists
 - Inputs - None
-- Outputs - None
+- Outputs - Boolean - Flag which indicates whether the operation was successful.
 
 ### Import-FromUnprotectedFile
 Creates a new Encrypted Key-Value store and stores all Key-Value records
@@ -328,12 +329,16 @@ Zagreb, Croatia, 2025
 ## Changelog
 
 ### v1.2.0
-- Added following Cmdlets
+- Added following Cmdlets:
     - `Rename-EKVStore`
     - `Rename-EKVKey`
     - `Test-EKVPassword`
     - `Export-EKVToFile`
     - `Import-EKVFromFile`
+
+- `Export-ToUnprotectedFile`
+    - Added flag -Force
+    - Added return boolean flag
 
 ### v1.1.1
 - Added flag `-RemoveFile` to `Export-FromUnprotectedFile`
