@@ -31,13 +31,13 @@ Boolean
 Flag which indicates whether the operation was successful.
 
 .EXAMPLE
-Import-FromUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
+Import-EKVFromUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
 
 Create a new EKV store named "testekv" and import all records from 
 C:\ekv-exports\export.kv.
 
 .EXAMPLE
-Import-FromUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv -Force
+Import-EKVFromUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv -Force
 
 Create a new EKV store named "testekv" and import all records from 
 C:\ekv-exports\export.kv even if "testekv" already exists, overwriting it.
@@ -47,7 +47,7 @@ To define a Secure String -Password value use for example:
 PS > $ekvpass = Read-Host -AsSecureString
 PS > ********
 #>
-function Import-FromUnprotectedFile {
+function Import-EKVFromUnprotectedFile {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Name of the Encrypted Key-Value store to create")]

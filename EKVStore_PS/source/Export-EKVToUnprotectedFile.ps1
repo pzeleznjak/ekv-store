@@ -31,12 +31,12 @@ Boolean
 Flag which indicates whether the operation was successful.
 
 .EXAMPLE
-Export-ToUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
+Export-EKVToUnprotectedFile -Name testekv -Password $ekvpass -ExportFile C:\ekv-exports\export.kv
 
 Export an EKV named "testekv" to the C:\ekv-exports\export.kv file.
 
 .EXAMPLE
-Export-ToUnprotectedFile -Name testekv -Password $ekvpass
+Export-EKVToUnprotectedFile -Name testekv -Password $ekvpass
 
 Export an EKV named "testekv" to the automatically assigned .\testekv.kv
 file.
@@ -46,7 +46,7 @@ To define a Secure String -Password value use for example:
 PS > $ekvpass = Read-Host -AsSecureString
 PS > ********
 #>
-function Export-ToUnprotectedFile {
+function Export-EKVToUnprotectedFile {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true, Position=0, HelpMessage="Name of the Encrypted Key-Value store to export")]

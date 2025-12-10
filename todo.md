@@ -3,7 +3,6 @@
 
 1. Implement in C#
 4. Check return values
-8. Rename Export-EKVToUnprotectedFile and Import-EKVFromUnprotectedFile
 4. Modify .ekv so that first line denotes a .ekv version
 5. Create an .ekv version migrating tool
     - ability to translate between versions of .ekv files

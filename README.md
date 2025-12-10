@@ -12,8 +12,8 @@ Implementation of Powershell tools used to manage Key-Value stores with the prop
     6. [Remove-EKVStore](#remove-ekvstore)
     7. [Copy-EKVStore](#copy-ekvstore)
     8. [Get-EKVStores](#get-ekvstores)
-    9. [Export-ToUnprotectedFile](#export-tounprotectedfile)
-    10. [Import-FromUnprotectedFile](#import-fromunprotectedfile)
+    9. [Export-EKVToUnprotectedFile](#export-ekvtounprotectedfile)
+    10. [Import-EKVFromUnprotectedFile](#import-ekvfromunprotectedfile)
     11. [Rename-EKVStore](#rename-ekvstore)
     12. [Rename-EKVKey](#rename-ekvkey)
     13. [Typical usage](#typical-usage)
@@ -137,7 +137,7 @@ Gets all Encrypted Key-Value (EKV) store names.
 - Inputs - None
 - Outputs - List<string\> - List of all EKV store names
 
-### Export-ToUnprotectedFile
+### Export-EKVToUnprotectedFile
 Checks whether the provided password is the master password of the provided Encrypted Key-Value store, decrypts all encrypted records and stores them in a provided .kv plaintext export file.
 
 - Parameters
@@ -150,7 +150,7 @@ Checks whether the provided password is the master password of the provided Encr
 - Inputs - None
 - Outputs - Boolean - Flag which indicates whether the operation was successful.
 
-### Import-FromUnprotectedFile
+### Import-EKVFromUnprotectedFile
 Creates a new Encrypted Key-Value store and stores all Key-Value records
 contained in the provided .kv plaintext file to the new store.
 
@@ -228,14 +228,19 @@ the EKV store, named the same as the file, already exists and imports it.
 PS > Import-Module C:\path\to\EKVStore_PS
 Loaded command: Add-EKVRecord.ps1
 Loaded command: Copy-EKVStore.ps1
-Loaded command: Export-ToUnprotectedFile.ps1
+Loaded command: Export-EKVToFile.ps1
+Loaded command: Export-EKVToUnprotectedFile.ps1
 Loaded command: Get-EKVKeys.ps1
 Loaded command: Get-EKVRecord.ps1
 Loaded command: Get-EKVStores.ps1
-Loaded command: Import-FromUnprotectedFile.ps1
+Loaded command: Import-EKVFromFile.ps1
+Loaded command: Import-EKVFromUnprotectedFile.ps1
 Loaded command: New-EKVStore.ps1
 Loaded command: Remove-EKVRecord.ps1
 Loaded command: Remove-EKVStore.ps1
+Loaded command: Rename-EKVKey.ps1
+Loaded command: Rename-EKVStore.ps1
+Loaded command: Test-EKVPassword.ps1
 PS > $ekvpass = Read-Host -AsSecureString
 ********
 PS > New-EKVStore -Name test -Password $ekvpass
@@ -331,6 +336,8 @@ Zagreb, Croatia, 2025
 ## Changelog
 
 ### v1.2.0
+- Renamed `Import-FromUnprotectedFile` to `Import-EKVFromUnprotectedFile`
+- Renamed `Export-EKVToUnprotectedFile` to `Export-EKVToUnprotectedFile`
 - Added flag `-ToClipboard` to Get-EKVRecord
 - Added following Cmdlets:
     - `Rename-EKVStore`
