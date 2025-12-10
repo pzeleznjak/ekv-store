@@ -21,7 +21,7 @@
 11. Add metadata to EKV records
     - date created
     - description
-12. Forbid any and all non-alphanumeric characters for key name
+12. Forbid any and all non-alphanumeric characters for key name except - and _
 13. Create a release v2.0.0
 14. Implement loading in-memory
 15. Create a release v2.1.0

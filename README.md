@@ -16,6 +16,9 @@ Implementation of Powershell tools used to manage Key-Value stores with the prop
     10. [Import-EKVFromUnprotectedFile](#import-ekvfromunprotectedfile)
     11. [Rename-EKVStore](#rename-ekvstore)
     12. [Rename-EKVKey](#rename-ekvkey)
+    13. [Test-EKVPassword](#test-ekvpassword)
+    14. [Export-EKVToFile](#export-ekvtofile)
+    15. [Import-EKVFromFile](#import-ekvfromfile)
     13. [Typical usage](#typical-usage)
 3. [Implementation notes](#implementation-notes)
     1. [Physical storage](#physical-storage)
@@ -249,10 +252,10 @@ Successfully created new Encrypted Key-Value store test
 True
 PS > Add-EKVRecord -Name test -Password $ekvpass -Key testkey1 -RawValue testvalue1
 Successfully added Encrypted Key-Value under key testkey1
-False
+True
 PS > Add-EKVRecord -Name test -Password $ekvpass -Key testkey2 -RawValue testvalue2
 Successfully added Encrypted Key-Value under key testkey2
-False
+True
 PS > $testkey1 = Get-EKVRecord -Name test -Password $ekvpass -Key testkey1
 Successfully decrypted Encrypted Key-Value under key testkey1
 # testkey1 can now be used in other commands like Invoke-RestMethod
