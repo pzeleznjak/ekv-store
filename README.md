@@ -80,6 +80,8 @@ Checks whether the provided password is the master password of the provided Encr
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to access
     - **Key** - String - Key of the Encrypted Key-Value record to get
     - **AsSecureString** - SwitchParameter - Flag which indicates that the function must return the decrypted value as a Secure String as opposed to a plaintext string
+    - **ToClipboard** - SwitchParameter - Flag which ensures that decrypted EKV record is copied to clipboard to be pasted later
+        - Can not be used with -AsSecureString flag
 - Inputs - None
 - Outputs
     - String - Decrypted value stored under a key as a plaintext string
@@ -329,13 +331,13 @@ Zagreb, Croatia, 2025
 ## Changelog
 
 ### v1.2.0
+- Added flag `-ToClipboard` to Get-EKVRecord
 - Added following Cmdlets:
     - `Rename-EKVStore`
     - `Rename-EKVKey`
     - `Test-EKVPassword`
     - `Export-EKVToFile`
     - `Import-EKVFromFile`
-
 - `Export-ToUnprotectedFile`
     - Added flag -Force
     - Added return boolean flag

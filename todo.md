@@ -1,8 +1,7 @@
 # EKV STORE
 ## TO DO
 
-1. Create a release v1.2.0
-3. Implement in C#
+1. Implement in C#
 4. Check return values
 8. Rename Export-EKVToUnprotectedFile and Import-EKVFromUnprotectedFile
 4. Modify .ekv so that first line denotes a .ekv version
