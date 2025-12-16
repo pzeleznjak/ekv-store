@@ -1,4 +1,5 @@
-﻿using EKVStore.Utils;
+﻿using EKVStore.Initialization;
+using EKVStore.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace EKVStore.Cmdlets
 
                             if (string.IsNullOrEmpty(_psScriptRoot))
                             {
-                                var modulePath = MyInvocation.MyCommand.Module?.ModuleBase;
+                                var modulePath = EKVModuleContext.ModuleRoot;
                                 _psScriptRoot = modulePath ?? throw new InvalidOperationException("Cannot determine script root");
                             }
                         }
@@ -56,17 +57,14 @@ namespace EKVStore.Cmdlets
             }
         }
 
-        private readonly object _psScriptRootLock = new();
+        private readonly Lock _psScriptRootLock = new();
         private string? _psScriptRoot;
 
-        private readonly object _psBoundParametersLock = new();
+        private readonly Lock _psBoundParametersLock = new();
         private Dictionary<string, object>? _psBoundParameters;
-
         
 
         protected static bool ContainsReservedChars(string key) => key.IndexOfAny(reservedKeyCharacters) >= 0;
-
-        protected static string GetStoreDirectory(string scriptRoot) => Path.Combine(scriptRoot, ".ekvs");
 
         protected static bool CreateStoreFile(string storeFile, bool force = false)
         {
@@ -93,12 +91,6 @@ namespace EKVStore.Cmdlets
             string saltedPassword = password + salt;
             string hashText = CryptographyService.GetSHA256HashHex(saltedPassword);
             return hashText.Equals(masterPasswordHash);
-        }
-
-        protected string GetStoreFile(string name, string? directoryPath = null)
-        {
-            directoryPath ??= GetStoreDirectory(PsScriptRoot);
-            return Path.Combine(directoryPath, $"{name}.ekv");
         }
     }
 }

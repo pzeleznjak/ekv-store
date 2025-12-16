@@ -7,6 +7,8 @@ using System.Management.Automation;
 using System.Security;
 using System.Security.Cryptography;
 using EKVStore.Utils;
+using EKVStore.Initialization;
+using EKVStore.Utils.ArgumentCompleters;
 
 namespace EKVStore.Cmdlets
 {
@@ -24,13 +26,13 @@ namespace EKVStore.Cmdlets
 
         protected override void ProcessRecord()
         {
-            string directoryPath = GetStoreDirectory(PsScriptRoot);
+            string directoryPath = EKVModuleContext.GetStoreDirectory();
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
             
-            string storeFile = GetStoreFile(Name, directoryPath);
+            string storeFile = EKVModuleContext.GetStoreFile(Name, directoryPath);
             bool success = CreateStoreFile(storeFile, Force);
 
             if (success)

@@ -1,4 +1,6 @@
-﻿using EKVStore.Utils;
+﻿using EKVStore.Initialization;
+using EKVStore.Utils;
+using EKVStore.Utils.ArgumentCompleters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +17,7 @@ namespace EKVStore.Cmdlets
     public class AddEKVRecordCmdlet : AbstractEKVCmdlet
     {
         [Parameter(Mandatory = true, Position = 0, HelpMessage = "Name of the Encrypted Key-Value store to access")]
+        [ArgumentCompleter(typeof(EKVStoreNameArgumentCompleter))]
         public string Name { get; set; }
 
         [Parameter(Mandatory = true, Position = 1, HelpMessage = "Master Password of the Encrypted Key-Value store to access")]
@@ -38,7 +41,7 @@ namespace EKVStore.Cmdlets
                 return;
             }
 
-            string storeFile = GetStoreFile(Name);
+            string storeFile = EKVModuleContext.GetStoreFile(Name);
             if (!File.Exists(storeFile))
             {
                 WriteError(new ErrorRecord(new FileNotFoundException($"Encrypted Key-Value store {Name} does not exist"), "EKVStoreDoesNotExist", ErrorCategory.ObjectNotFound, this));
