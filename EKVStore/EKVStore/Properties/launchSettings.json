@@ -6,7 +6,7 @@
     "EKV": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-NoExit -Command \"$ekvpass = ConvertTo-SecureString 'testpass' -AsPlainText -Force; Import-Module .\\bin\\Debug\\net9.0\\EKVStore.dll; Set-Location .\"",
+      "commandLineArgs": "-NoProfile -NoExit -Command \"$ekvpass = ConvertTo-SecureString 'testpass' -AsPlainText -Force; Import-Module .\\bin\\Debug\\net9.0\\EKVStore.dll; Set-Location .\"",
       "workingDirectory": "$(ProjectDir)",
       "nativeDebugging": true
     }
