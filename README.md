@@ -355,6 +355,7 @@ Zagreb, Croatia, 2025
 ## Changelog
 
 ### v1.2.0
+- Fixed bug where Import-EKVFromFile fails if .ekvs/ directory does not exist
 - Added autocomplete functionality to EKV Store Name and EKV Record Key Cmdlet parameters
 - Renamed `Import-FromUnprotectedFile` to `Import-EKVFromUnprotectedFile`
 - Renamed `Export-EKVToUnprotectedFile` to `Export-EKVToUnprotectedFile`
