@@ -66,7 +66,12 @@ function Import-EKVFromFile {
 
     $name = [System.IO.Path]::GetFileNameWithoutExtension($ExportFile)
 
-    $storePath = Get-StorePath -Name $name
+    $storeDirectory = Get-StoreDirectoryPath
+    if (-not (Test-Path -Path $storeDirectory)) {
+        New-Item -Path $storeDirectory -ItemType Directory
+    }
+
+    $storePath = Get-StorePath -Name $name -DirectoryPath $storeDirectory
     if ((-not $Force) -and (Test-Path $storePath)) {
         Write-Host "Encrypted Key-Value store $name already exists" -ForegroundColor Red
         return $false
