@@ -9,6 +9,7 @@ in a provided .kv plaintext export file.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to export.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to export.
@@ -93,4 +94,9 @@ function Export-EKVToUnprotectedFile {
     Set-Content -Path $ExportFile -Value $sb.ToString()
 
     Write-Host "Successfully exported Encrypted Key-Value store $Name to $ExportFile" -ForegroundColor Green
+}
+
+Register-ArgumentCompleter -CommandName Export-EKVToUnprotectedFile -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

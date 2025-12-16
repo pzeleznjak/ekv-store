@@ -159,3 +159,42 @@ function New-AESObject {
 
     return $aes
 }
+
+function Add-EKVStoreNameArgumentCompletion {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+
+    $storeDirectory = Get-StoreDirectoryPath
+    $files = Get-ChildItem -Path $storeDirectory -Filter "*.ekv" -File | ForEach-Object { $_.BaseName }
+
+    $matchedEKVs = $files | Where-Object { $_ -like "$wordToComplete*" }
+
+    foreach ($match in $matchedEKVs) {
+        [System.Management.Automation.CompletionResult]::new($match, $match, 'ParameterValue', $match)
+    }
+}
+
+function Add-EKVRecordKeyArgumentCompletion {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+
+    if (-not $fakeBoundParameters.ContainsKey('Password')) { return }
+
+    if (-not $fakeBoundParameters.ContainsKey('Name')) { return }
+
+    $name = $fakeBoundParameters['Name']
+    $password = $fakeBoundParameters['Password']
+    
+    $storePath = Get-StorePath -Name $name -CheckExists
+    if ($null -eq $storePath) { return }
+
+    $masterPassword = Get-MasterPassword -StorePath $storePath
+
+    $success = Compare-PasswordHashes -MasterPasswordHash $masterPassword.PasswordHash -Password $password -Salt $masterPassword.Salt
+    if (-not $success) { return }
+
+    $keys = Get-Content -Path $storePath -Encoding UTF8 | Select-Object -Skip 1 | ForEach-Object { ($_ -split "\s+")[0] }
+    $matchedKeys = $keys | Where-Object { $_ -like "$wordToComplete*" }
+
+    foreach ($match in $matchedKeys) {
+        [System.Management.Automation.CompletionResult]::new($match, $match, 'ParameterValue', $match)
+    }
+}

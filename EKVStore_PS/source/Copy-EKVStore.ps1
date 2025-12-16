@@ -9,6 +9,7 @@ copies the contents of the original to the copy.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to copy.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to copy.
@@ -78,4 +79,9 @@ function Copy-EKVStore {
     (Get-Content $storePath) | Set-Content $copyStorePath
     Write-Host "Copied contents of $Name to $CopyName Encrypted Key-Value store" -ForegroundColor Green
     return $true
+}
+
+Register-ArgumentCompleter -CommandName Copy-EKVStore -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

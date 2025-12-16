@@ -8,6 +8,7 @@ Encrypted Key-Value store and lists all stored keys.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to access.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to access.
@@ -49,4 +50,9 @@ function Get-EKVKeys {
 
     $keys = Get-Content -Path $storePath -Encoding UTF8 | Select-Object -Skip 1 | ForEach-Object { ($_ -split "\s+")[0] }
     return $keys
+}
+
+Register-ArgumentCompleter -CommandName Get-EKVKeys -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

@@ -54,6 +54,7 @@ Creates a new empty Encrypted Key-Value store and sets its master password.
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to create
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to create
     - **Force** - SwitchParameter - Flag which forces the command to create the specified Encrypted Key-Value store even if the target copy store already exists, overwriting it
 - Inputs - None
@@ -64,6 +65,7 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to access
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to access
     - **Key** - String - Key of the Encrypted Key-Value record to add
     - **Value** - SecureString - Secure String Value of the Encrypted Key-Value record to add
@@ -80,8 +82,10 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to access
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to access
     - **Key** - String - Key of the Encrypted Key-Value record to get
+        - can be autocompleted
     - **AsSecureString** - SwitchParameter - Flag which indicates that the function must return the decrypted value as a Secure String as opposed to a plaintext string
     - **ToClipboard** - SwitchParameter - Flag which ensures that decrypted EKV record is copied to clipboard to be pasted later
         - Can not be used with -AsSecureString flag
@@ -97,6 +101,7 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to access
+        - can be autocompleted
     - **Password** - SecureSting - Master Password of the Encrypted Key-Value store to access
 - Inputs - None
 - Outputs - List<String\> -All keys stored in the EKV store
@@ -107,8 +112,10 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to access
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to access
     - **Key** - String - Key of the Encrypted Key-Value record to remove
+        - can be autocompleted
 - Inputs - None
 - Outputs - String - Decrypted value associated with removed key
 
@@ -117,6 +124,7 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to remove
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to remove
     - **Force** - SwitchParameter - Flag which forces the command to remove the specified Encrypted Key-Value store without prompting the user for confirmation
 - Inputs - None
@@ -127,6 +135,7 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to copy
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to copy
     - **CopyName** - String - Name of the new copy Encrypted Key-Value store
     - **Force** - SwitchParameter - Flag which forces the command to copy the specified Encrypted Key-Value store even if the target copy store already exists, overwriting it
@@ -145,6 +154,7 @@ Checks whether the provided password is the master password of the provided Encr
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to export
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to export
     - **ExportFile** - String - Target .kv file to which to export the EKV store
         - If value is not provided it automatically has value "$Name.kv" in caller working directory.
@@ -159,6 +169,7 @@ contained in the provided .kv plaintext file to the new store.
 
 - Parameters
     - **Name** - String - Name of the Encrypted Key-Value store to create
+        - can be autocompleted
     - **Password** - SecureString - Master Password of the Encrypted Key-Value store to create
     - **ExportFile** - String - Path to unprotected file to import to new Encrypted Key-Value store
     - **RemoveFile** - SwitchParameter - Remove the unprotected file after importing
@@ -172,6 +183,7 @@ Encrypted Key-Value store, and renames it to new provided name.
 
 - Parameters
     - **Name** - Original name of the Encrypted Key-Value store to rename
+        - can be autocompleted
     - **Password** - Master Password of the Encrypted Key-Value store to rename
     - **NewName** - New name of the Encrypted Key-Value Store
 - Inputs - None
@@ -183,8 +195,10 @@ Encrypted Key-Value store, finds the provided key in given EKV and renames it.
 
 - Parameters
     - **Name** - Name of the Encrypted Key-Value store to access
+        - can be autocompleted
     - **Password** - Master Password of the Encrypted Key-Value store to access
     - **Key** - Key of the Encrypted Key-Value record to rename
+        - can be autocompleted
     - **NewKey** - New key of the Encrypted Key-Value record
 
 - Inputs - None
@@ -196,6 +210,7 @@ otherwise.
 
 - Parameters
     - **Name** - Name of the Encrypted Key-Value store to access
+        - can be autocompleted
     - **Password** - Master Password of the Encrypted Key-Value store to test
 - Inputs - None
 - Outputs - Boolean - Flag which indicates whether the provided password is the master password of the provided EKV store.
@@ -206,6 +221,7 @@ directory where filename is $Name.ekv.
 
 - Parameters
     - **Name** - Name of the Encrypted Key-Value store to export
+        - can be autocompleted
     - **ExportDirectory** - Target directory to which to export the EKV.
         - Resulting file is named $Name.ekv
         - If not defined, takes the directory from which the command was called and exports the EKV to that directory
@@ -339,6 +355,7 @@ Zagreb, Croatia, 2025
 ## Changelog
 
 ### v1.2.0
+- Added autocomplete functionality to EKV Store Name and EKV Record Key Cmdlet parameters
 - Renamed `Import-FromUnprotectedFile` to `Import-EKVFromUnprotectedFile`
 - Renamed `Export-EKVToUnprotectedFile` to `Export-EKVToUnprotectedFile`
 - Added flag `-ToClipboard` to Get-EKVRecord

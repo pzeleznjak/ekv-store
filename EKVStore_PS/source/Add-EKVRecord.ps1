@@ -9,6 +9,7 @@ the provided key.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to access.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to access.
@@ -102,4 +103,9 @@ function Add-EKVRecord {
     Write-Host "Successfully added Encrypted Key-Value under key $Key" -ForegroundColor Green
 
     return $true
+}
+
+Register-ArgumentCompleter -CommandName Add-EKVRecord -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

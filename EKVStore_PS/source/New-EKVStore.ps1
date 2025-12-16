@@ -7,6 +7,7 @@ Creates a new empty Encrypted Key-Value store and sets its master password.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to create.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to create.
@@ -77,4 +78,9 @@ function New-EKVStore {
     Write-Host "Successfully created new Encrypted Key-Value store $Name" -ForegroundColor Green
 
     return $true
+}
+
+Register-ArgumentCompleter -CommandName New-EKVStore -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

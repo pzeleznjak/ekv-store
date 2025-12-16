@@ -9,6 +9,7 @@ contained in the provided .kv plaintext file to the new store.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to create.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to create.
@@ -107,4 +108,9 @@ function Import-EKVFromUnprotectedFile {
     Write-Host "Imported $ExportFile to new Encrypted Key-Value store $Name successfully" -ForegroundColor Green
 
     return $true
+}
+
+Register-ArgumentCompleter -CommandName Import-EKVFromUnprotectedFile -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

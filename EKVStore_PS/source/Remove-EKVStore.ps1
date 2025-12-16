@@ -8,6 +8,7 @@ Encrypted Key-Value store and removes the EKV store.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to remove.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to remove.
@@ -96,4 +97,9 @@ function Remove-EKVStore {
     Write-Host "Removed Encrypted Key-Value store $Name" -ForegroundColor Green
     
     return $records
+}
+
+Register-ArgumentCompleter -CommandName Remove-EKVStore -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

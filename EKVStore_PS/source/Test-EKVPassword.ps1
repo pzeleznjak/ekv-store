@@ -9,6 +9,7 @@ otherwise.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to access.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to test.
@@ -55,4 +56,9 @@ function Test-EKVPassword {
     }
 
     return $success
+}
+
+Register-ArgumentCompleter -CommandName Test-EKVPassword -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

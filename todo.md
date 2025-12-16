@@ -1,7 +1,8 @@
 # EKV STORE
 ## TO DO
 
-1. Implement in C#
+1. Rewrite in C#
+2. Refactor rewritten code
 4. Check return values
 4. Modify .ekv so that first line denotes a .ekv version
 5. Create an .ekv version migrating tool
@@ -24,5 +25,6 @@
 12. Forbid any and all non-alphanumeric characters for key name except - and _
 13. Create a release v2.0.0
 14. Implement loading in-memory
+15. Implement Get-EKVRecord with filter (regex)
 15. Create a release v2.1.0
 14. Write README.md section about theory behind cryptographic hashing, salt and encoding

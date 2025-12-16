@@ -8,6 +8,7 @@ Encrypted Key-Value store, and renames it to new provided name.
 
 .PARAMETER Name
 Original name of the Encrypted Key-Value store to rename.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to rename.
@@ -59,4 +60,9 @@ function Rename-EKVStore {
 
     Write-Host "Successfully renamed EKV store $Name to $NewName" -ForegroundColor Green
     return $true
+}
+
+Register-ArgumentCompleter -CommandName Rename-EKVStore -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

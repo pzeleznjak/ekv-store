@@ -10,12 +10,14 @@ it along with the associated value.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to access.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to access.
 
 .PARAMETER Key
 Key of the Encrypted Key-Value record to remove.
+Has implemented autocomplete functionality.
 
 .INPUTS
 None
@@ -94,4 +96,14 @@ function Remove-EKVRecord {
 
     Write-Host "Successfully deleted key $Key" -ForegroundColor Green
     return $decryptedValueText
+}
+
+Register-ArgumentCompleter -CommandName Remove-EKVRecord -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
+}
+
+Register-ArgumentCompleter -CommandName Remove-EKVRecord -ParameterName Key -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVRecordKeyArgumentCompletion -fakeBoundParameters $fakeBoundParameters -wordToComplete $wordToComplete
 }

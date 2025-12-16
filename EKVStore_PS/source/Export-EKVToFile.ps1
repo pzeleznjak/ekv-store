@@ -8,6 +8,7 @@ directory where filename is $Name.ekv.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to export.
+Has implemented autocomplete functionality.
 
 .PARAMETER ExportDirectory
 Target directory to which to export the EKV store. Resulting file is named
@@ -78,4 +79,9 @@ function Export-EKVToFile {
     
     Write-Host "Successfully exported $Name EKV store to $exportFile" -ForegroundColor Green
     return $true
+}
+
+Register-ArgumentCompleter -CommandName Export-EKVToFile -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
 }

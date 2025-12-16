@@ -8,12 +8,14 @@ Encrypted Key-Value store, finds the provided key in given EKV and renames it.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to access.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to access.
 
 .PARAMETER Key
 Key of the Encrypted Key-Value record to rename.
+Has implemented autocomplete functionality.
 
 .PARAMETER NewKey
 New key of the Encrypted Key-Value record.
@@ -86,4 +88,14 @@ function Rename-EKVKey {
 
     Write-Host "Successfuly renamed key $Key to $NewKey" -ForegroundColor Green
     return $true
+}
+
+Register-ArgumentCompleter -CommandName Rename-EKVKey -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
+}
+
+Register-ArgumentCompleter -CommandName Rename-EKVKey -ParameterName Key -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVRecordKeyArgumentCompletion -fakeBoundParameters $fakeBoundParameters -wordToComplete $wordToComplete
 }

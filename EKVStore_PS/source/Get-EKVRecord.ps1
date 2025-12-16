@@ -9,12 +9,14 @@ the value stored under it and returns it.
 
 .PARAMETER Name
 Name of the Encrypted Key-Value store to access.
+Has implemented autocomplete functionality.
 
 .PARAMETER Password
 Master Password of the Encrypted Key-Value store to access.
 
 .PARAMETER Key
 Key of the Encrypted Key-Value record to get.
+Has implemented autocomplete functionality.
 
 .PARAMETER AsSecureString
 Flag which indicates that the function must return the decrypted value
@@ -123,6 +125,18 @@ function Get-EKVRecord {
         return $secureDecryptedValueText
     }
 
-    Set-Clipboard $decryptedValueText
+    if ($ToClipboard) { 
+        Set-Clipboard $decryptedValueText 
+    }
     return $decryptedValueText
+}
+
+Register-ArgumentCompleter -CommandName Get-EKVRecord -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
+}
+
+Register-ArgumentCompleter -CommandName Get-EKVRecord -ParameterName Key -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    Add-EKVRecordKeyArgumentCompletion -fakeBoundParameters $fakeBoundParameters -wordToComplete $wordToComplete
 }
