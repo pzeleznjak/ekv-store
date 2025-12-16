@@ -6,14 +6,9 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<PropertyGroup>
-		<OutputPath>bin\Debug\net9.0\temp\</OutputPath>
-	</PropertyGroup>
-
-
 	<Target Name="CopyToPSFolder" AfterTargets="Build">
 		<PropertyGroup>
-			<DestFolder>$(SolutionDir)..\DLLs\</DestFolder>
+			<DestFolder>$(SolutionDir)..\Builds\</DestFolder>
 		</PropertyGroup>
 		<MakeDir Directories="$(DestFolder)" />
 		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DestFolder)" SkipUnchangedFiles="true" />
