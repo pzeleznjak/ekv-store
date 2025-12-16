@@ -68,7 +68,7 @@ function Import-EKVFromFile {
 
     $storeDirectory = Get-StoreDirectoryPath
     if (-not (Test-Path -Path $storeDirectory)) {
-        New-Item -Path $storeDirectory -ItemType Directory
+        New-Item -Path $storeDirectory -ItemType Directory | Out-Null
     }
 
     $storePath = Get-StorePath -Name $name -DirectoryPath $storeDirectory
