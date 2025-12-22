@@ -1,6 +1,7 @@
 # EKV STORE
 ## TO DO
 
+2. Create release v1.2.1
 1. Rewrite in C#
 2. Refactor rewritten code
 4. Check return values

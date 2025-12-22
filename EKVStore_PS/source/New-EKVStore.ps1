@@ -79,8 +79,3 @@ function New-EKVStore {
 
     return $true
 }
-
-Register-ArgumentCompleter -CommandName New-EKVStore -ParameterName Name -ScriptBlock {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
-    Add-EKVStoreNameArgumentCompletion -wordToComplete $wordToComplete
-}
