@@ -354,6 +354,10 @@ Zagreb, Croatia, 2025
 
 ## Changelog
 
+### v1.2.1
+- Fixed bug where -AsSecureString flag in Get-EKVRecord causes the command to copy fetched value into clipboard
+- Removed redundant -Name autocomplete from New-EKVStore
+
 ### v1.2.0
 - Fixed bug where Import-EKVFromFile fails if .ekvs/ directory does not exist
 - Added autocomplete functionality to EKV Store Name and EKV Record Key Cmdlet parameters
