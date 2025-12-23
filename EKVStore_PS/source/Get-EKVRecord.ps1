@@ -118,15 +118,14 @@ function Get-EKVRecord {
 
     Write-Host "Successfully decrypted Encrypted Key-Value under key $Key" -ForegroundColor Green
 
+    if ($ToClipboard) { 
+        Set-Clipboard $decryptedValueText 
+    }
+
     if ($AsSecureString) {
 
         $secureDecryptedValueText = $decryptedValueText | ConvertTo-SecureString -AsPlainText -Force
-        Set-Clipboard $secureDecryptedValueText
         return $secureDecryptedValueText
-    }
-
-    if ($ToClipboard) { 
-        Set-Clipboard $decryptedValueText 
     }
     return $decryptedValueText
 }
