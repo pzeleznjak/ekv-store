@@ -10,9 +10,6 @@ using System.Threading.Tasks;
 
 namespace EKVStore.Utils.ArgumentCompleters
 {
-    // 1. move GetStoreFile and GetStoreDirectory to a static class
-    // 4. add rootDirectory parameter to GetStoreFile and GetStoreDirectory
-    // 5. implement CompleteArgument
     internal class EKVStoreNameArgumentCompleter : IArgumentCompleter
     {
         public IEnumerable<CompletionResult> CompleteArgument(string commandName, string parameterName, string wordToComplete, CommandAst commandAst, IDictionary fakeBoundParameters)

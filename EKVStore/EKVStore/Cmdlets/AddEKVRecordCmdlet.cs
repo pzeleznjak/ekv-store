@@ -49,8 +49,8 @@ namespace EKVStore.Cmdlets
                 return;
             }
 
-            MasterPassword masterPassword = ReadMasterPassword(storeFile);
-            if (!ComparePasswordHashes(masterPassword.PasswordHash, Password, masterPassword.Salt))
+            MasterPassword masterPassword = MasterPassword.ReadMasterPassword(storeFile);
+            if (!masterPassword.ComparePasswordHash(Password))
             {
                 WriteError(new ErrorRecord(new ArgumentException("Invalid Key-Value store Master Password"), "InvalidEKVMasterPassword", ErrorCategory.InvalidArgument, this));
                 WriteObject(false); 

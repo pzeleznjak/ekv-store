@@ -77,20 +77,5 @@ namespace EKVStore.Cmdlets
             fs.Close();
             return true;
         }
-
-        protected static MasterPassword ReadMasterPassword(string storeFile)
-        {
-            var firstLineSplit = (File.ReadLines(storeFile).FirstOrDefault() ?? throw new InvalidDataException("EKV Store File is empty!")).Split(' ');
-            return new MasterPassword(firstLineSplit[0], firstLineSplit[1]);
-        }
-
-        protected static bool ComparePasswordHashes(string masterPasswordHash, SecureString password, string salt) => ComparePasswordHashes(masterPasswordHash, CryptographyService.ConvertToPlainString(password), salt);
-
-        protected static bool ComparePasswordHashes(string masterPasswordHash, string password, string salt)
-        {
-            string saltedPassword = password + salt;
-            string hashText = CryptographyService.GetSHA256HashHex(saltedPassword);
-            return hashText.Equals(masterPasswordHash);
-        }
     }
 }
