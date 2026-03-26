@@ -18,14 +18,14 @@ namespace EKVStore.Cmdlets
     {
         [Parameter(Mandatory = true, Position = 0, HelpMessage = "Name of the Encrypted Key-Value store to access")]
         [ArgumentCompleter(typeof(EKVStoreNameArgumentCompleter))]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [Parameter(Mandatory = true, Position = 1, HelpMessage = "Master Password of the Encrypted Key-Value store to access")]
-        public SecureString Password { get; set; }
+        public required SecureString Password { get; set; }
 
         [Parameter(Mandatory = true, Position = 2, HelpMessage = "Key of the Encrypted Key-Value record to get")]
         [ArgumentCompleter(typeof(EKVStoreKeyArgumentCompleter))]
-        public string Key { get; set; }
+        public required string Key { get; set; }
 
         [Parameter(ParameterSetName = "SecureStringSet", HelpMessage = "Return Encrypted Value as SecureString")]
         public SwitchParameter AsSecureString { get; set; } = false;
@@ -54,7 +54,7 @@ namespace EKVStore.Cmdlets
             string? encryptedValueHex = null;
             foreach(string line in File.ReadAllLines(storeFile, Encoding.UTF8).Skip(1))
             {
-                string[] split = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+                string[] split = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries); // USE ALL WHITESPACES
                 if (split[0].Equals(Key))
                 {
                     encryptedValueHex = split[1];

@@ -18,19 +18,19 @@ namespace EKVStore.Cmdlets
     {
         [Parameter(Mandatory = true, Position = 0, HelpMessage = "Name of the Encrypted Key-Value store to access")]
         [ArgumentCompleter(typeof(EKVStoreNameArgumentCompleter))]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [Parameter(Mandatory = true, Position = 1, HelpMessage = "Master Password of the Encrypted Key-Value store to access")]
-        public SecureString Password { get; set; }
+        public required SecureString Password { get; set; }
 
         [Parameter(Mandatory = true, Position = 2, HelpMessage = "Key of the Encrypted Key-Value record to add")]
-        public string Key { get; set; }
+        public required string Key { get; set; }
 
         [Parameter(Mandatory = true, Position = 3, ParameterSetName = "ByValue", HelpMessage = "Secure String Value of the Encrypted Key-Value record to add")]
-        public SecureString Value { get; set; }
+        public required SecureString Value { get; set; }
 
         [Parameter(Mandatory = true, Position = 4, ParameterSetName = "ByRawValue", HelpMessage = "Raw value of the Encrypted Key-Value record to add")]
-        public string RawValue { get; set; }
+        public required string RawValue { get; set; }
 
         protected override void ProcessRecord()
         {
