@@ -97,6 +97,7 @@ namespace EKVStore.Cmdlets
                     .AddCommand("Set-Clipboard")
                     .AddArgument(decryptedValueText)
                     .Invoke();
+                return;
             }
 
             if (AsSecureString)
