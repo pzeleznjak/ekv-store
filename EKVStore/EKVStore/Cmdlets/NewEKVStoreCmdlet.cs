@@ -35,13 +35,9 @@ namespace EKVStore.Cmdlets
             string storeFile = EKVModuleContext.GetStoreFile(Name, directoryPath);
             bool success = CreateStoreFile(storeFile, Force);
 
-            if (success)
-            {
-                Host.UI.WriteLine("Encrypted Key-Value store already exists");
-            } 
-            else
-            {
-                WriteError(new ErrorRecord(new InvalidOperationException("Created new empty Encrypted Key-Value store"), "EKVStoreAlreadyExists", ErrorCategory.ResourceExists, this));
+            if (!success)
+            { 
+                WriteError(new ErrorRecord(new InvalidOperationException("Encrypted Key-Value store already exists"), "EKVStoreAlreadyExists", ErrorCategory.ResourceExists, this));
                 WriteObject(false);
                 return;
             }
