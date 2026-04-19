@@ -46,51 +46,50 @@ namespace EKVStore.Cmdlets
 
             Host.UI.WriteLine($"Exporting {Name} to {ExportFile}");
 
-            using (PowerShell ps = PowerShell.Create(RunspaceMode.CurrentRunspace))
+            using PowerShell ps = PowerShell.Create(RunspaceMode.CurrentRunspace);
+            ps.AddCommand("Get-EKVKeys")
+                .AddParameter("Name", Name)
+                .AddParameter("Password", Password);
+            List<string> keys = [];
+            foreach (PSObject result in ps.Invoke())
             {
-                ps.AddCommand("Get-EKVKeys")
-                    .AddParameter("Name", Name)
-                    .AddParameter("Password", Password);
-                List<string> keys = [];
-                foreach (PSObject result in ps.Invoke())
-                {
-                    keys.AddRange(result.ToString().Split(" "));
-                }
-
-                StringBuilder sb = new();
-                sb.AppendLine("Key-Value_Store");
-                sb.AppendLine("# --------------- #");
-
-                foreach (string key in keys)
-                {
-                    ps.Commands.Clear();
-                    ps.AddCommand("Get-EKVRecord")
-                        .AddParameter("Name", Name)
-                        .AddParameter("Password", Password)
-                        .AddParameter("Key", key);
-                    var result = ps.Invoke<string>();
-                    if (ps.HadErrors)
-                    {
-                        ps.Streams.Error
-                            .Select(e => e.ToString())
-                            .ToList()
-                            .ForEach(Console.WriteLine);
-
-                        throw new Exception("Error calling Get-EKVRecord");
-                    }
-
-                    string value = result.FirstOrDefault()
-                        ?? throw new InvalidOperationException($"No value returned for key '{key}'");
-
-                    sb.Append(key);
-                    sb.Append('=');
-                    sb.AppendLine(value);
-                }
-
-                File.WriteAllText(ExportFile, sb.ToString());
-
-                Host.UI.WriteLine(ConsoleColor.Green, Host.UI.RawUI.BackgroundColor, $"Successfully exported Encrypted Key-Value store {Name} to {ExportFile}");
+                keys.AddRange(result.ToString().Split(" "));
             }
+
+            StringBuilder sb = new();
+            sb.AppendLine("Key-Value_Store");
+            sb.AppendLine("# --------------- #");
+
+            foreach (string key in keys)
+            {
+                ps.Commands.Clear();
+                ps.AddCommand("Get-EKVRecord")
+                    .AddParameter("Name", Name)
+                    .AddParameter("Password", Password)
+                    .AddParameter("Key", key);
+                var result = ps.Invoke<string>();
+                if (ps.HadErrors)
+                {
+                    ps.Streams.Error
+                        .Select(e => e.ToString())
+                        .ToList()
+                        .ForEach(Console.WriteLine);
+
+                    throw new Exception("Error calling Get-EKVRecord");
+                }
+
+                string value = result.FirstOrDefault()
+                    ?? throw new InvalidOperationException($"No value returned for key '{key}'");
+
+                sb.Append(key);
+                sb.Append('=');
+                sb.AppendLine(value);
+            }
+
+            File.WriteAllText(ExportFile, sb.ToString());
+
+            Host.UI.WriteLine(ConsoleColor.Green, Host.UI.RawUI.BackgroundColor, $"Successfully exported Encrypted Key-Value store {Name} to {ExportFile}");
+            WriteObject(true);
         }
     }
 }
