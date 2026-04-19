@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EKVStore.Initialization
 {
-    internal class EKVModuleContext
+    internal static class EKVModuleContext
     {
         public static string ModuleRoot { get; private set; } = "";
 
